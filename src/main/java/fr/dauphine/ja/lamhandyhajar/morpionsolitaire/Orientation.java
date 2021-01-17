@@ -7,7 +7,8 @@ enum Orientation {
 	HORIZONTAL {
 		public List<PointCoordinates> getPointsPosition(PointCoordinates firstPosition, int length) {
 			ArrayList<PointCoordinates> points = new ArrayList<PointCoordinates>();
-			//TODO: check if there is a point out of bounds, if it's the case return empty list
+			// TODO: check if there is a point out of bounds, if it's the case return empty
+			// list
 			for (int i = 0; i < length; i++) {
 				points.add(firstPosition.goRight(i));
 			}
@@ -41,7 +42,7 @@ enum Orientation {
 			return points;
 		}
 	};
-	
+
 	public List<PointCoordinates> getPointsPosition(PointCoordinates firstPosition, int length) {
 		return null;
 	}
