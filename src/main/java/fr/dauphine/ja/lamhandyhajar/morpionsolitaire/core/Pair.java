@@ -12,7 +12,7 @@ public class Pair<T, E> {
 		return p2;
 	}
 
-	Pair(T p1, E p2) {
+	public Pair(T p1, E p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 	}

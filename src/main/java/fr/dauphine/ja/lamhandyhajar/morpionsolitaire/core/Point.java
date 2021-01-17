@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Point {
-	HashMap<Line, Integer> lines;
-	int index; // si c'est un point initial ou le premier coup, le deuxième coup etc.
+	private HashMap<Line, Integer> lines;
+	private int index; // si c'est un point initial ou le premier coup, le deuxième coup etc.
 	private PointCoordinates position;
 	private JoinFive game;
 	
@@ -45,6 +45,10 @@ public class Point {
 	public void addLine(Line line, int positionInLine) {
 		lines.put(line, positionInLine);
 	}
+	
+	public void removeLine(Line line) {
+		lines.remove(line);
+	}
 
 	public HashMap<Line, Integer> getLines() {
 		return lines;
@@ -53,4 +57,5 @@ public class Point {
 	public String toString() {
 		return position.toString();
 	}
+	
 }

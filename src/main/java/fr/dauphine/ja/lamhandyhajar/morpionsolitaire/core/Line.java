@@ -16,8 +16,6 @@ public class Line implements Iterable<Point> {
 		this.game = game;
 	}
 
-	static int bruh = 0;
-
 	/*
 	 * checks if there is any overlap
 	 */
