@@ -1,4 +1,4 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 import java.util.ArrayList;
 import java.util.List;

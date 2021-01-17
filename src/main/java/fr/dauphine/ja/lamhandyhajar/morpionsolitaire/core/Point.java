@@ -1,4 +1,4 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +9,20 @@ public class Point {
 	int index; // si c'est un point initial ou le premier coup, le deuxième coup etc.
 	private PointCoordinates position;
 	private JoinFive game;
-
-	public Point(int index, PointCoordinates position, JoinFive game) {
+	
+	public Point(PointCoordinates position, JoinFive game) {
 		lines = new HashMap<Line, Integer>();
-		this.index = index;
 		this.position = position;
 		this.game = game;
+	}
+
+	public Point(int index, PointCoordinates position, JoinFive game) {
+		this(position, game);
+		this.index = index;
+	}
+	
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public List<Line> getAllPossibleLines() {

@@ -1,17 +1,18 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
-public class Pair<T> {
-	protected T p1, p2;
+public class Pair<T, E> {
+	protected T p1;
+	protected E p2;
 
-	T getP1() {
+	public T getP1() {
 		return p1;
 	}
 
-	T getP2() {
+	public E getP2() {
 		return p2;
 	}
 
-	Pair(T p1, T p2) {
+	Pair(T p1, E p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 	}
@@ -23,7 +24,7 @@ public class Pair<T> {
 
 		if (!(o instanceof Pair))
 			return false;
-		Pair<?> p = (Pair<?>) o;
+		Pair<?, ?> p = (Pair<?, ?>) o;
 
 		return p.p1 == p1 && p.p2 == p2;
 	}

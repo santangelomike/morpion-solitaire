@@ -1,9 +1,9 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 import java.util.Iterator;
 import java.util.List;
 
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.JoinFive.Rule;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 
 public class Line implements Iterable<Point> {
 	private PointCoordinates firstPosition;

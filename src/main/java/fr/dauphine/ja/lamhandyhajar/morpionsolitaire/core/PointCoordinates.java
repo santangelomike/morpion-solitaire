@@ -1,8 +1,8 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 import java.util.Objects;
 
-public class PointCoordinates extends Pair<Integer> {
+public class PointCoordinates extends Pair<Integer, Integer> {
 	PointCoordinates(Integer p1, Integer p2) {
 		super(p1, p2);
 	}
