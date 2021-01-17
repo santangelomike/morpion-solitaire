@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class JoinFive {
+	
+	enum Rule {
+		T,
+		D;
+	}
 
 	private HashMap<PointCoordinates, Point> grid;
 
@@ -12,6 +17,16 @@ public class JoinFive {
 	private List<Line> lines;
 
 	private int lineLength;
+	
+	private Rule rule;
+	
+	private void setRule(Rule rule) {
+		this.rule = rule;
+	}
+	
+	public Rule getRule() {
+		return rule;
+	}
 
 	// bounds of the current grid to print it properly.
 	private Integer leftBound;
@@ -23,11 +38,16 @@ public class JoinFive {
 		return lineLength;
 	}
 
-	private JoinFive(int lineLength) {
+	public JoinFive(int lineLength) {
 		grid = new HashMap<>();
 		this.lineLength = lineLength;
 		lines = new ArrayList<Line>();
 		initGrid();
+	}
+	
+	public JoinFive(int lineLength, Rule rule) {
+		this(lineLength);
+		setRule(rule);
 	}
 
 	private void initGrid() {
@@ -67,7 +87,7 @@ public class JoinFive {
 	 * Given a position of a point, returns the available lines or an empty list if
 	 * the point is not valid
 	 */
-	private List<Line> getPossibleLines(Point newPoint) {
+	public List<Line> getPossibleLines(Point newPoint) {
 		List<Line> possibleLines = null;
 		List<Line> lines = new ArrayList<Line>();
 
@@ -92,7 +112,7 @@ public class JoinFive {
 	/*
 	 * Adds a line to the grid, with its new corresponding point
 	 */
-	private void addLine(Line line, Point p) {
+	public void addLine(Line line, Point p) {
 		setPoint(p);
 		lines.add(line);
 		int i = 0;
@@ -103,6 +123,8 @@ public class JoinFive {
 
 	public static void main(String[] args) {
 		JoinFive game = new JoinFive(5);
+		if (args[0].equals("5T")) game.setRule(Rule.T);
+		else game.setRule(Rule.D);
 		Point p1, p2, p3, p4, p5;
 		p1 = new Point(1, new PointCoordinates(4, 6), game);
 		p2 = new Point(2, new PointCoordinates(5, 6), game);

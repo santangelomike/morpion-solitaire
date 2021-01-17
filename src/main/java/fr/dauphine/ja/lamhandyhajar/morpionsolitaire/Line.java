@@ -3,6 +3,8 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.JoinFive.Rule;
+
 public class Line implements Iterable<Point> {
 	private PointCoordinates firstPosition;
 	private Orientation orientation;
@@ -62,7 +64,7 @@ public class Line implements Iterable<Point> {
 			}
 			i += 1;
 		}
-		return numberOverlaps < 2;
+		return numberOverlaps < (game.getRule() == Rule.T ? 2 : 1);
 	}
 
 	private List<PointCoordinates> getPointsPosition() {
