@@ -11,6 +11,7 @@ import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
 
 public class NMCS {
 	
+	//TODO: multithread
 	public static Pair<Integer, LinkedList<Pair<Line, Point>>> nested(JoinFive game, int level) {
 		ArrayList<Pair<Line, Point>> moves = game.getMoves();
 		int bestScore = -1;
@@ -44,8 +45,9 @@ public class NMCS {
 				for (Pair<Line, Point> move : moves) {
 					game.play(move.getP1(), move.getP2());
 					Pair<Integer, LinkedList<Pair<Line, Point>>> result = nested(game, level - 1);
-					int score = result.getP1();
 					game.undoPlay();
+					
+					int score = result.getP1();
 					if (scoreOfMove < score) {
 						scoreOfMove = score;
 						
@@ -61,18 +63,17 @@ public class NMCS {
 				bestSequence = moveSequence;
 			}
 			
-			Pair<Line, Point> move = bestSequence.removeFirst(); // NullPointerException when level = 3
+			Pair<Line, Point> move = bestSequence.removeFirst();
 			effectivePlays.add(move);
-			System.out.println(move.getP2());
 			game.play(move.getP1(), move.getP2());
 			moves = game.getMoves();
 		}
-		return new Pair<Integer, LinkedList<Pair<Line, Point>>>(bestScore, effectivePlays);
+		return new Pair<Integer, LinkedList<Pair<Line, Point>>>(game.getNumberOfMoves(), effectivePlays);
 	}
 	
 	public static void main(String[] args) {
 		JoinFive game = new JoinFive(Rule.D);
-		NMCS.nested(game, 3);
+		NMCS.nested(game, 6);
 		System.out.println(game.getNumberOfMoves());
 	}
 }

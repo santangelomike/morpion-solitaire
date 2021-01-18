@@ -86,9 +86,9 @@ public class Line implements Iterable<Point> {
 
 	public String toString() {
 		String result = "";
-		for (Point p : this) {
+		for (PointCoordinates p : getPointsPosition()) {
 			result += p.toString() + ", ";
 		}
-		return result;
+		return result.substring(0, result.length() - 2);
 	}
 }

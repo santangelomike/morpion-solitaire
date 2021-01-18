@@ -15,8 +15,6 @@ public class JoinFive {
 	private List<Line> linesOnGrid;
 
 	private static int lineLength = 5;
-
-	private int numberOfMoves;
 	
 	// bounds of the current grid to print it properly.
 	private Integer leftBound;
@@ -25,7 +23,7 @@ public class JoinFive {
 	private Integer downBound;
 
 	public int getNumberOfMoves() {
-		return numberOfMoves;
+		return grid.size() - 36;
 	}
 
 	private Rule rule;
@@ -102,6 +100,8 @@ public class JoinFive {
 	}
 
 	private void setPoint(Point p, boolean persistent) {
+		grid.put(p.getPosition(), p);
+		
 		if (persistent) {
 			int p1 = p.getPosition().getP1();
 			int p2 = p.getPosition().getP2();
@@ -111,12 +111,10 @@ public class JoinFive {
 			downBound = (downBound != null) ? Math.min(downBound, p2) : p2;
 			upBound = (upBound != null) ? Math.max(upBound, p2) : p2;
 			
-			p.setIndex(numberOfMoves);
+			p.setIndex(getNumberOfMoves());
 			
 			//System.out.println("set " + p.getPosition());
 		}
-
-		grid.put(p.getPosition(), p);
 	}
 
 	private void removePoint(Point p) {
@@ -169,7 +167,6 @@ public class JoinFive {
 	 */
 	public void play(Line line, Point p) {
 		if (getPoint(p.getPosition()) != null) return;
-		numberOfMoves++;
 		setPoint(p, true);
 		linesOnGrid.add(line);
 		int i = 0;
@@ -189,7 +186,6 @@ public class JoinFive {
 		Point p = play.getP2();
 		Line line = play.getP1();
 		
-		numberOfMoves--;
 		linesOnGrid.remove(line);
 		for (Point p1 : line) {
 			p1.removeLine(line);
