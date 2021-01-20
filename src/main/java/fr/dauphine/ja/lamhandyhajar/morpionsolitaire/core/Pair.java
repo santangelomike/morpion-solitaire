@@ -28,4 +28,8 @@ public class Pair<T, E> {
 
 		return p.p1 == p1 && p.p2 == p2;
 	}
+	
+	public Pair<T, E> getCopy() {
+		return new Pair<T, E>(p1, p2);
+	}
 }

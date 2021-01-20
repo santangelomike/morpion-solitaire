@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers.Move;
+
 public class JoinFive {
 	
-	Stack<Pair<Line, Point>> plays = new Stack<Pair<Line, Point>>();
+	Stack<Move> plays = new Stack<Move>();
 	
 	private HashMap<PointCoordinates, Point> grid;
 
@@ -44,8 +46,8 @@ public class JoinFive {
 		return this;
 	}
 	
-	public ArrayList<Pair<Line, Point>> getMoves() {
-		ArrayList<Pair<Line, Point>> result = new ArrayList<>();
+	public ArrayList<Move> getMoves() {
+		ArrayList<Move> result = new ArrayList<>();
 		
 		for (int x = leftBound - 1; x <= rightBound + 1; x++) {
 			for (int y = upBound + 1; y >= downBound - 1; y--) {
@@ -53,10 +55,10 @@ public class JoinFive {
 				Point p = getPoint(coord);
 				
 				if (p == null) {
-					p = new Point(coord, getInstance());
+					p = new Point(coord);
 					List<Line> lines = getPossibleLines(p);
 					for (Line line : lines) {
-						result.add(new Pair<Line, Point>(line, p));
+						result.add(new Move(line, p));
 					}
 				}
 			}
@@ -65,7 +67,7 @@ public class JoinFive {
 		return result;
 	}
 
-	public int getLineLength() {
+	public static int getLineLength() {
 		return lineLength;
 	}
 
@@ -90,7 +92,7 @@ public class JoinFive {
 		for (int r = 0; r < 10; r++)
 			for (int c = 0; c < 10; c++)
 				if ((basePoints[r] & (1 << c)) != 0) {
-					Point p = new Point(0, new PointCoordinates(c, r), this);
+					Point p = new Point(0, new PointCoordinates(c, r));
 					setPoint(p, true);
 				}
 	}
@@ -136,7 +138,7 @@ public class JoinFive {
 
 		setPoint(newPoint, false);
 		for (Line line : possibleLines) {
-			if (line.isValid()) {
+			if (line.isValid(this)) {
 				lines.add(line);
 			}
 		}
@@ -170,10 +172,15 @@ public class JoinFive {
 		setPoint(p, true);
 		linesOnGrid.add(line);
 		int i = 0;
-		for (Point p1 : line) {
+		for (PointCoordinates c1 : line) {
+			Point p1 = getPoint(c1);
 			p1.addLine(line, i++);
 		}
-		plays.push(new Pair<Line, Point>(line, p));
+		plays.push(new Move(line, p));
+	}
+	
+	public void play(Move move) {
+		play(move.getP1(), move.getP2());
 	}
 	
 	/**
@@ -182,12 +189,13 @@ public class JoinFive {
 	public boolean undoPlay() {
 		if (plays.empty()) return false;
 		
-		Pair<Line, Point> play = plays.pop();
+		Move play = plays.pop();
 		Point p = play.getP2();
 		Line line = play.getP1();
 		
 		linesOnGrid.remove(line);
-		for (Point p1 : line) {
+		for (PointCoordinates c1 : line) {
+			Point p1 = getPoint(c1);
 			p1.removeLine(line);
 		}
 		removePoint(p);
@@ -201,11 +209,11 @@ public class JoinFive {
 		else
 			game = new JoinFive(Rule.D);
 		Point p1, p2, p3, p4, p5;
-		p1 = new Point(new PointCoordinates(4, 6), game);
-		p2 = new Point(new PointCoordinates(5, 6), game);
-		p3 = new Point(new PointCoordinates(3, 10), game);
-		p4 = new Point(new PointCoordinates(5, 8), game);
-		p5 = new Point(new PointCoordinates(10, 6), game);
+		p1 = new Point(new PointCoordinates(4, 6));
+		p2 = new Point(new PointCoordinates(5, 6));
+		p3 = new Point(new PointCoordinates(3, 10));
+		p4 = new Point(new PointCoordinates(5, 8));
+		p5 = new Point(new PointCoordinates(10, 6));
 
 		// exemple de chevauchement de deux lignes sur un point:
 		// game.getPossibleLines(p2) renvoie deux lignes possibles

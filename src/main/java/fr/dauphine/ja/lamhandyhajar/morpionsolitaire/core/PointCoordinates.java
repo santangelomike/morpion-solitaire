@@ -31,4 +31,9 @@ public class PointCoordinates extends Pair<Integer, Integer> {
 	public int hashCode() {
 		return Objects.hash(p1, p2);
 	}
+	
+	@Override
+	public PointCoordinates getCopy() {
+		return new PointCoordinates(p1, p2);
+	}
 }

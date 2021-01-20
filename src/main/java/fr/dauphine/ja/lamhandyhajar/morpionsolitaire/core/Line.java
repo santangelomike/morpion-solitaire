@@ -5,32 +5,31 @@ import java.util.List;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 
-public class Line implements Iterable<Point> {
+public class Line implements Iterable<PointCoordinates> {
 	private PointCoordinates firstPosition;
 	private Orientation orientation;
-	private JoinFive game;
 
-	public Line(PointCoordinates firstPosition, Orientation orientation, JoinFive game) {
+	public Line(PointCoordinates firstPosition, Orientation orientation) {
 		this.firstPosition = firstPosition;
 		this.orientation = orientation;
-		this.game = game;
 	}
 
 	/*
 	 * checks if there is any overlap
 	 */
-	public boolean isValid() {
+	public boolean isValid(JoinFive game) {
 		// on sait à partir d'ici que tous les points de la ligne ne sont pas out of
 		// bounds par rapport au tableau grid (vérifié dans Orientation)
 		int i = 0;
 		int numberOverlaps = 0;
 
-		for (Point p : this) {
+		for (PointCoordinates coord : this) {
+			Point p = game.getPoint(coord);
 			if (p == null)
 				return false;
 			else {
 				// si c'est un point qui n'est pas aux extrémités de la ligne
-				if (i != 0 && i != game.getLineLength() - 1) {
+				if (i != 0 && i != JoinFive.getLineLength() - 1) {
 					for (Line line : p.getLines().keySet()) {
 						if (line.orientation == orientation)
 							return false;
@@ -42,7 +41,8 @@ public class Line implements Iterable<Point> {
 						if (line.orientation == orientation) {
 							// il faut que p soit le dernier point de line, auquel cas ça ne fonctionne pas
 							Point tmp = null;
-							for (Point p1 : line) {
+							for (PointCoordinates c1 : line) {
+								Point p1 = game.getPoint(c1);
 								tmp = p1;
 							}
 							if (tmp != p)
@@ -50,7 +50,7 @@ public class Line implements Iterable<Point> {
 							numberOverlaps += 1;
 						}
 					}
-				} else if (i == game.getLineLength() - 1) {
+				} else if (i == JoinFive.getLineLength() - 1) {
 					for (Line line : p.getLines().keySet()) {
 						if (line.orientation == orientation) {
 							if (line.firstPosition != p.getPosition())
@@ -66,11 +66,11 @@ public class Line implements Iterable<Point> {
 	}
 
 	private List<PointCoordinates> getPointsPosition() {
-		return orientation.getPointsPosition(firstPosition, game.getLineLength());
+		return orientation.getPointsPosition(firstPosition, JoinFive.getLineLength());
 	}
 
-	public Iterator<Point> iterator() {
-		return new Iterator<Point>() {
+	public Iterator<PointCoordinates> iterator() {
+		return new Iterator<PointCoordinates>() {
 			List<PointCoordinates> pointsPosition = getPointsPosition();
 			int i = 0;
 
@@ -78,17 +78,21 @@ public class Line implements Iterable<Point> {
 				return i < pointsPosition.size();
 			}
 
-			public Point next() {
-				return game.getPoint(pointsPosition.get(i++));
+			public PointCoordinates next() {
+				return pointsPosition.get(i++);
 			}
 		};
 	}
 
-	public String toString() {
+	public String toString(final JoinFive game) {
 		String result = "";
 		for (PointCoordinates p : getPointsPosition()) {
 			result += p.toString() + ", ";
 		}
 		return result.substring(0, result.length() - 2);
+	}
+	
+	public Line getCopy() {
+		return new Line(firstPosition.getCopy(), orientation);
 	}
 }

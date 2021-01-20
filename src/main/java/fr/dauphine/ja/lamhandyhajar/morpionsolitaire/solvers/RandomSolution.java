@@ -10,16 +10,16 @@ import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
 
 public class RandomSolution {
-	public static Pair<Integer, LinkedList<Pair<Line, Point>>> sample(JoinFive game) {
-		ArrayList<Pair<Line, Point>> l;
-		LinkedList<Pair<Line, Point>> plays = new LinkedList<>();
+	public static Pair<Integer, LinkedList<Move>> sample(JoinFive game) {
+		ArrayList<Move> l;
+		LinkedList<Move> plays = new LinkedList<>();
 		int nbPlays = 0;
 		
 		do {
 			l = game.getMoves();
 			if (l.size() == 0) break;
 			int choiceIndex = (int)(Math.random() * l.size());
-			Pair<Line, Point> choice = l.get(choiceIndex);
+			Move choice = l.get(choiceIndex);
 			plays.add(choice);
 			game.play(choice.getP1(), choice.getP2());
 			nbPlays++;
@@ -28,7 +28,7 @@ public class RandomSolution {
 		int score = game.getNumberOfMoves();
 		for (int i = 0; i < nbPlays; i++) game.undoPlay();
 		
-		return new Pair<Integer, LinkedList<Pair<Line, Point>>>(score, plays);
+		return new Pair<Integer, LinkedList<Move>>(score, plays);
 	}
 	
 	public static void main(String[] args) {
