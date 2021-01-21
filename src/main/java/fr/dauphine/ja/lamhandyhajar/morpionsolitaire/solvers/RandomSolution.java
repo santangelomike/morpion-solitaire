@@ -5,11 +5,15 @@ import java.util.LinkedList;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Line;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
 
 public class RandomSolution {
+	
+	/**
+	 * plays random moves (uniform distribution) to find a solution for the JoinFive game
+	 * @param game
+	 * @return the score, and the moves made to get this score, in order.
+	 */
 	public static Pair<Integer, LinkedList<Move>> sample(JoinFive game) {
 		ArrayList<Move> l;
 		LinkedList<Move> plays = new LinkedList<>();

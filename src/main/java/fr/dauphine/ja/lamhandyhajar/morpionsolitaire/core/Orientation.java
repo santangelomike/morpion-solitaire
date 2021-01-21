@@ -3,12 +3,14 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to represent the orientation of a line in a JoinFive game.
+ * It can either be horizontal (from left to right), vertical (bottom to top), updiagonal (going right and up) or downdiagonal (going right and down)
+ */
 enum Orientation {
 	HORIZONTAL {
 		public List<PointCoordinates> getPointsPosition(PointCoordinates firstPosition, int length) {
 			ArrayList<PointCoordinates> points = new ArrayList<PointCoordinates>();
-			// TODO: check if there is a point out of bounds, if it's the case return empty
-			// list
 			for (int i = 0; i < length; i++) {
 				points.add(firstPosition.goRight(i));
 			}

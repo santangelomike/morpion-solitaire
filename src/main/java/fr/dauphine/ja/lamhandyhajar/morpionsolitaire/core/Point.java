@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * used to represent a point in a JoinFive game
+ */
 public class Point {
 	private HashMap<Line, Integer> lines;
-	private int index; // si c'est un point initial ou le premier coup, le deuxième coup etc.
+	private int index;
 	private PointCoordinates position;
 	
 	public Point(PointCoordinates position) {
@@ -14,6 +17,10 @@ public class Point {
 		this.position = position;
 	}
 
+	/**
+	 * @param index corresponds to the order of the move associated to this point: is it the first move, the second, etc.
+	 * @param position the position of the point
+	 */
 	public Point(int index, PointCoordinates position) {
 		this(position);
 		this.index = index;
@@ -23,6 +30,9 @@ public class Point {
 		this.index = index;
 	}
 
+	/**
+	 * @return a list of all lines that could contain this point. Independent from any grid.
+	 */
 	public List<Line> getAllPossibleLines() {
 		List<Line> possibleLines = new ArrayList<Line>();
 
@@ -40,6 +50,11 @@ public class Point {
 		return position;
 	}
 
+	/**
+	 * Adds a line that contains this point
+	 * @param line the line that
+	 * @param positionInLine the position of this point in line, according to iterator order from line.
+	 */
 	public void addLine(Line line, int positionInLine) {
 		lines.put(line, positionInLine);
 	}
@@ -56,6 +71,10 @@ public class Point {
 		return position.toString();
 	}
 	
+	/**
+	 * This method is useful to avoid multithreading concurrent modifications
+	 * @return a copy of this point, without the lines associated with it.
+	 */
 	public Point getCopy() {
 		return new Point(index, position);
 	}

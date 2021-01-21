@@ -5,21 +5,27 @@ import java.util.List;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 
+/**
+ * Used to represent a line in a JoinFive game
+ */
 public class Line implements Iterable<PointCoordinates> {
 	private PointCoordinates firstPosition;
 	private Orientation orientation;
-
+	
+	/**
+	 * @param firstPosition the starting point of this line
+	 * @param orientation is the orientation, is it horizontal (going from left to right), vertical (from bottom to top), updiagonal (going up and right), downdiagonal (going bottom and right)
+	 */
 	public Line(PointCoordinates firstPosition, Orientation orientation) {
 		this.firstPosition = firstPosition;
 		this.orientation = orientation;
 	}
 
-	/*
-	 * checks if there is any overlap
+	/**
+	 * @param game the game we want to consider
+	 * @return true if this line can be played according to the actual grid in game, false otherwise
 	 */
 	public boolean isValid(JoinFive game) {
-		// on sait à partir d'ici que tous les points de la ligne ne sont pas out of
-		// bounds par rapport au tableau grid (vérifié dans Orientation)
 		int i = 0;
 		int numberOverlaps = 0;
 
@@ -65,6 +71,9 @@ public class Line implements Iterable<PointCoordinates> {
 		return numberOverlaps < (game.getRule() == Rule.T ? 2 : 1);
 	}
 
+	/**
+	 * @return a list of the coordinates that this line contains
+	 */
 	private List<PointCoordinates> getPointsPosition() {
 		return orientation.getPointsPosition(firstPosition, JoinFive.getLineLength());
 	}
@@ -84,7 +93,7 @@ public class Line implements Iterable<PointCoordinates> {
 		};
 	}
 
-	public String toString(final JoinFive game) {
+	public String toString() {
 		String result = "";
 		for (PointCoordinates p : getPointsPosition()) {
 			result += p.toString() + ", ";
@@ -92,6 +101,10 @@ public class Line implements Iterable<PointCoordinates> {
 		return result.substring(0, result.length() - 2);
 	}
 	
+	/**
+	 * This method is useful to avoid multithreading concurrent modifications
+	 * @return a copy of the object
+	 */
 	public Line getCopy() {
 		return new Line(firstPosition.getCopy(), orientation);
 	}

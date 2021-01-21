@@ -37,15 +37,10 @@ public class JoinFive {
 	public Rule getRule() {
 		return rule;
 	}
-
-	/**
-	 * @return the calling instance of the class. This method is used on getMoves()
-	 *         method
-	 */
-	private JoinFive getInstance() {
-		return this;
-	}
 	
+	/**
+	 * @return the available moves at the current state of the game
+	 */
 	public ArrayList<Move> getMoves() {
 		ArrayList<Move> result = new ArrayList<>();
 		
@@ -81,12 +76,10 @@ public class JoinFive {
 		this();
 		this.rule = rule;
 	}
-	
-	public JoinFive(Rule rule, HashMap<PointCoordinates, Point> grid) {
-		this(rule);
-		this.grid = grid;
-	}
 
+	/**
+	 * Initializes the grid of this instance with the usual grid from the JoinFive game. Code inspired from: https://rosettacode.org/wiki/Morpion_solitaire/Java
+	 */
 	private void initGrid() {
 		final int[] basePoints = { 120, 72, 72, 975, 513, 513, 975, 72, 72, 120 };
 		for (int r = 0; r < 10; r++)
@@ -101,6 +94,11 @@ public class JoinFive {
 		return grid.get(position);
 	}
 
+	/**
+	 * Sets a point in the grid.
+	 * @param p
+	 * @param persistent is true iff we consider that this point is permanently added to the grid
+	 */
 	private void setPoint(Point p, boolean persistent) {
 		grid.put(p.getPosition(), p);
 		
@@ -114,8 +112,6 @@ public class JoinFive {
 			upBound = (upBound != null) ? Math.max(upBound, p2) : p2;
 			
 			p.setIndex(getNumberOfMoves());
-			
-			//System.out.println("set " + p.getPosition());
 		}
 	}
 
@@ -123,9 +119,8 @@ public class JoinFive {
 		grid.remove(p.getPosition());
 	}
 
-	/*
-	 * Given a position of a point, returns the available lines or an empty list if
-	 * the point is not valid
+	/**
+	 * Given a point, returns the available lines or an empty list if the point is not valid
 	 */
 	public List<Line> getPossibleLines(Point newPoint) {
 		List<Line> possibleLines = null;
@@ -147,6 +142,9 @@ public class JoinFive {
 		return lines;
 	}
 	
+	/**
+	 * updates variables leftBound, rightBound, downBound and upBound according to the actual grid
+	 */
 	public void updateBounds() {
 		leftBound = null;
 		rightBound = null;
@@ -164,8 +162,10 @@ public class JoinFive {
 		}
 	}
 
-	/*
+	/**
 	 * Adds a line to the grid, with its new corresponding point
+	 * @param line
+	 * @param p
 	 */
 	public void play(Line line, Point p) {
 		if (getPoint(p.getPosition()) != null) return;
@@ -184,7 +184,7 @@ public class JoinFive {
 	}
 	
 	/**
-	 * @return true if there was a move to undo, false otherwise
+	 * @return true if there was a move in the grid to undo, false otherwise
 	 */
 	public boolean undoPlay() {
 		if (plays.empty()) return false;

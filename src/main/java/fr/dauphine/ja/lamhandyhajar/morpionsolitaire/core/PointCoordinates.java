@@ -32,6 +32,10 @@ public class PointCoordinates extends Pair<Integer, Integer> {
 		return Objects.hash(p1, p2);
 	}
 	
+	/**
+	 * this method is useful to avoid multithreading concurrent modifications
+	 * @return a copy of this object
+	 */
 	@Override
 	public PointCoordinates getCopy() {
 		return new PointCoordinates(p1, p2);

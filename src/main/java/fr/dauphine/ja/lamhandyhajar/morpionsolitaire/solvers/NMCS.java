@@ -8,6 +8,10 @@ import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
+/**
+ * Implementation of the NMCS algorithm, with a multithreading option.
+ * Singleton pattern.
+ */
 public class NMCS {
 	
 	private static NMCS instance = null;
@@ -30,6 +34,12 @@ public class NMCS {
 		return instance;
 	}
 	
+	/**
+	 * NMCS algorithm: https://www.lamsade.dauphine.fr/~cazenave/papers/nested.pdf
+	 * @param game
+	 * @param level
+	 * @return the score and the moves made to get to this score, in order
+	 */
 	public Pair<Integer, LinkedList<Move>> nested(JoinFive game, int level) {
 		ArrayList<Move> moves = game.getMoves();
 		int bestScore = -1;
@@ -90,7 +100,13 @@ public class NMCS {
 		return new Pair<Integer, LinkedList<Move>>(game.getNumberOfMoves(), effectivePlays);
 	}
 	
-	// pas d'appel récursif à multithreadNested car sinon ça fait trop de threads différents et vu qu'il y a que 8 coeurs dans le CPU, on a fait l'hypothèse que ça n'allait pas grandement améliorer les perfs
+	/**
+	 * Multithread implementation of the NMCS algorithm
+	 * @param level
+	 * @param rule
+	 * @return the score and the moves made to get to this score, in order
+	 * @throws InterruptedException
+	 */
 	public Pair<Integer, LinkedList<Move>> multithreadNested(int level, Rule rule) throws InterruptedException {
 		List<JoinFive> games = new ArrayList<JoinFive>();
 		List<NMCSThread> nmcsThreads = new ArrayList<NMCSThread>();
@@ -147,7 +163,7 @@ public class NMCS {
 				bestScore = scoreOfMove;
 				bestSequence = moveSequence;
 			}
-			
+
 			Move move = bestSequence.removeFirst();
 			effectivePlays.add(move);
 			for (JoinFive game : games) {
