@@ -5,6 +5,8 @@ import java.util.List;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Used to represent a line in a JoinFive game
  */
@@ -17,6 +19,9 @@ public class Line implements Iterable<PointCoordinates> {
 	 * @param orientation is the orientation, is it horizontal (going from left to right), vertical (from bottom to top), updiagonal (going up and right), downdiagonal (going bottom and right)
 	 */
 	public Line(PointCoordinates firstPosition, Orientation orientation) {
+		checkNotNull(firstPosition);
+		checkNotNull(orientation);
+		
 		this.firstPosition = firstPosition;
 		this.orientation = orientation;
 	}

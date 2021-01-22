@@ -18,6 +18,9 @@ public class NMCS {
 	
 	private int nbThreads;
 	
+	/**
+	 * @param nbThreads the maximum number of threads we want to instantiate for the multithread implementation.
+	 */
 	private NMCS(int nbThreads) {
 		this.nbThreads = nbThreads;
 	}
@@ -30,7 +33,7 @@ public class NMCS {
 	}
 	
 	public static NMCS getInstance() {
-		if (instance == null) throw new IllegalStateException();
+		if (instance == null) throw new IllegalStateException("An attempt has been made to get NMCS instance but it hasn't been instantiated.");
 		return instance;
 	}
 	
@@ -101,7 +104,7 @@ public class NMCS {
 	}
 	
 	/**
-	 * Multithread implementation of the NMCS algorithm
+	 * Multithread implementation of the NMCS algorithm.
 	 * @param level
 	 * @param rule
 	 * @return the score and the moves made to get to this score, in order

@@ -7,6 +7,8 @@ import java.util.Stack;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers.Move;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class JoinFive {
 	
 	Stack<Move> plays = new Stack<Move>();
@@ -42,6 +44,11 @@ public class JoinFive {
 	 * @return the available moves at the current state of the game
 	 */
 	public ArrayList<Move> getMoves() {
+		checkNotNull(leftBound);
+		checkNotNull(rightBound);
+		checkNotNull(downBound);
+		checkNotNull(upBound);
+		
 		ArrayList<Move> result = new ArrayList<>();
 		
 		for (int x = leftBound - 1; x <= rightBound + 1; x++) {
@@ -62,6 +69,9 @@ public class JoinFive {
 		return result;
 	}
 
+	/**
+	 * @return the number of points a line has to contain (fixed to 5)
+	 */
 	public static int getLineLength() {
 		return lineLength;
 	}
@@ -71,14 +81,18 @@ public class JoinFive {
 		linesOnGrid = new ArrayList<Line>();
 		initGrid();
 	}
-
+	
+	/**
+	 * @param rule T for 5T, D for 5D
+	 */
 	public JoinFive(Rule rule) {
 		this();
 		this.rule = rule;
 	}
 
 	/**
-	 * Initializes the grid of this instance with the usual grid from the JoinFive game. Code inspired from: https://rosettacode.org/wiki/Morpion_solitaire/Java
+	 * Initializes the grid of this instance with the usual grid from the JoinFive game.
+	 * Code inspired from: https://rosettacode.org/wiki/Morpion_solitaire/Java
 	 */
 	private void initGrid() {
 		final int[] basePoints = { 120, 72, 72, 975, 513, 513, 975, 72, 72, 120 };
@@ -90,7 +104,13 @@ public class JoinFive {
 				}
 	}
 
+	/**
+	 * @param position of the point
+	 * @return the point in the grid, or null if not found
+	 */
 	public Point getPoint(PointCoordinates position) {
+		checkNotNull(position);
+		
 		return grid.get(position);
 	}
 
@@ -100,6 +120,8 @@ public class JoinFive {
 	 * @param persistent is true iff we consider that this point is permanently added to the grid
 	 */
 	private void setPoint(Point p, boolean persistent) {
+		checkNotNull(p);
+		
 		grid.put(p.getPosition(), p);
 		
 		if (persistent) {
@@ -116,13 +138,17 @@ public class JoinFive {
 	}
 
 	private void removePoint(Point p) {
+		checkNotNull(p);
+		
 		grid.remove(p.getPosition());
 	}
 
 	/**
-	 * Given a point, returns the available lines or an empty list if the point is not valid
+	 * Given a point, returns the playable lines according to the actual state of the game, or an empty list if there isn't any move available for this point
 	 */
 	public List<Line> getPossibleLines(Point newPoint) {
+		checkNotNull(newPoint);
+		
 		List<Line> possibleLines = null;
 		List<Line> lines = new ArrayList<Line>();
 
@@ -168,18 +194,25 @@ public class JoinFive {
 	 * @param p
 	 */
 	public void play(Line line, Point p) {
-		if (getPoint(p.getPosition()) != null) return;
+		checkNotNull(line);
+		checkNotNull(p);
+		
+		if (getPoint(p.getPosition()) != null) throw new IllegalArgumentException("There is already a point where you want to play.");
+		
 		setPoint(p, true);
 		linesOnGrid.add(line);
 		int i = 0;
 		for (PointCoordinates c1 : line) {
 			Point p1 = getPoint(c1);
+			if (p1 == null) throw new NullPointerException("This line is not valid.");
 			p1.addLine(line, i++);
 		}
 		plays.push(new Move(line, p));
 	}
 	
 	public void play(Move move) {
+		checkNotNull(move);
+		
 		play(move.getP1(), move.getP2());
 	}
 	

@@ -1,5 +1,7 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class Pair<T, E> {
 	protected T p1;
 	protected E p2;
@@ -12,7 +14,14 @@ public class Pair<T, E> {
 		return p2;
 	}
 
+	/**
+	 * @param p1 not null
+	 * @param p2 not null
+	 */
 	public Pair(T p1, E p2) {
+		checkNotNull(p1);
+		checkNotNull(p2);
+		
 		this.p1 = p1;
 		this.p2 = p2;
 	}
@@ -26,10 +35,7 @@ public class Pair<T, E> {
 			return false;
 		Pair<?, ?> p = (Pair<?, ?>) o;
 
-		return p.p1 == p1 && p.p2 == p2;
+		return p.p1.equals(p1) && p.p2.equals(p2);
 	}
 	
-	public Pair<T, E> getCopy() {
-		return new Pair<T, E>(p1, p2);
-	}
 }

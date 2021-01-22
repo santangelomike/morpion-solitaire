@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * used to represent a point in a JoinFive game
  */
@@ -13,6 +15,8 @@ public class Point {
 	private PointCoordinates position;
 	
 	public Point(PointCoordinates position) {
+		checkNotNull(position);
+		
 		lines = new HashMap<Line, Integer>();
 		this.position = position;
 	}
@@ -56,6 +60,12 @@ public class Point {
 	 * @param positionInLine the position of this point in line, according to iterator order from line.
 	 */
 	public void addLine(Line line, int positionInLine) {
+		boolean pointFoundInLine = false;
+		for (PointCoordinates coord : line) {
+			if (coord.equals(position)) pointFoundInLine = true;
+		}
+		if (!pointFoundInLine) throw new IllegalArgumentException("Point is not found in the line it is supposed to be in.");
+		
 		lines.put(line, positionInLine);
 	}
 	
