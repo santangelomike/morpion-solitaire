@@ -35,13 +35,11 @@ public class RandomSolution {
 		
 		for (int i = 0; i < nbPlays; i++) game.undoPlay();
 		
-		return new Pair<Integer, LinkedList<Move>>(game.getNumberOfMoves(), plays);
+		return new Pair<Integer, LinkedList<Move>>(nbPlays, plays);
 	}
 	
 	public static void main(String[] args) {
-		long time = System.nanoTime();
 		JoinFive game = new JoinFive(Rule.D);
 		System.out.println(sample(game).getP1());
-		System.out.println((System.nanoTime() - time) * Math.pow(10, -6));
 	}
 }

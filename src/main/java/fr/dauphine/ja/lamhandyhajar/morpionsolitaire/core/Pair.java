@@ -15,8 +15,9 @@ public class Pair<T, E> {
 	}
 
 	/**
-	 * @param p1 not null
-	 * @param p2 not null
+	 * @param p1
+	 * @param p2
+	 * @throws NullPointerException
 	 */
 	public Pair(T p1, E p2) {
 		checkNotNull(p1);

@@ -14,6 +14,10 @@ public class Point {
 	private int index;
 	private PointCoordinates position;
 	
+	/**
+	 * @param position
+	 * @throws NullPointerException
+	 */
 	public Point(PointCoordinates position) {
 		checkNotNull(position);
 		
@@ -46,7 +50,7 @@ public class Point {
 			possibleLines.add(new Line(position.goLeft(i).goDown(i), Orientation.UPDIAGONAL));
 			possibleLines.add(new Line(position.goLeft(i).goUp(i), Orientation.DOWNDIAGONAL));
 		}
-
+		
 		return possibleLines;
 	}
 
@@ -58,6 +62,7 @@ public class Point {
 	 * Adds a line that contains this point
 	 * @param line the line that
 	 * @param positionInLine the position of this point in line, according to iterator order from line.
+	 * @throws IllegalArgumentException if line doesn't contain this point
 	 */
 	public void addLine(Line line, int positionInLine) {
 		boolean pointFoundInLine = false;
@@ -89,4 +94,15 @@ public class Point {
 		return new Point(index, position);
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+
+		if (!(o instanceof Point))
+			return false;
+		Point p = (Point) o;
+
+		return position.equals(p.position);
+	}
 }

@@ -8,6 +8,8 @@ import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Implementation of the NMCS algorithm, with a multithreading option.
  * Singleton pattern.
@@ -44,6 +46,8 @@ public class NMCS {
 	 * @return the score and the moves made to get to this score, in order
 	 */
 	public Pair<Integer, LinkedList<Move>> nested(JoinFive game, int level) {
+		checkNotNull(game);
+		
 		ArrayList<Move> moves = game.getMoves();
 		int bestScore = -1;
 		LinkedList<Move> bestSequence = null;
@@ -98,7 +102,7 @@ public class NMCS {
 			Move move = bestSequence.removeFirst();
 			effectivePlays.add(move);
 			game.play(move.getP1(), move.getP2());
-			moves = game.getMoves();
+			moves = new ArrayList<>(game.getMoves());
 		}
 		return new Pair<Integer, LinkedList<Move>>(game.getNumberOfMoves(), effectivePlays);
 	}
@@ -111,6 +115,8 @@ public class NMCS {
 	 * @throws InterruptedException
 	 */
 	public Pair<Integer, LinkedList<Move>> multithreadNested(int level, Rule rule) throws InterruptedException {
+		checkNotNull(rule);
+		
 		List<JoinFive> games = new ArrayList<JoinFive>();
 		List<NMCSThread> nmcsThreads = new ArrayList<NMCSThread>();
 		List<Thread> threads = new ArrayList<Thread>();
@@ -121,7 +127,7 @@ public class NMCS {
 			threads.add(new Thread(nmcsThreads.get(i)));
 		}
 		
-		ArrayList<Move> moves = games.get(0).getMoves();
+		ArrayList<Move> moves = new ArrayList<>(games.get(0).getMoves());
 		int bestScore = -1;
 		LinkedList<Move> bestSequence = null;
 		LinkedList<Move> effectivePlays = new LinkedList<>();
@@ -143,7 +149,7 @@ public class NMCS {
 						}
 						t.reset();
 						threads.remove(i);
-						Move copiedMove = new Move(move.getP1().getCopy(), move.getP2().getCopy());
+						Move copiedMove = move.getCopy();
 						t.setMove(copiedMove);
 						threads.add(i, new Thread(t));
 						threads.get(i).start();
@@ -166,13 +172,13 @@ public class NMCS {
 				bestScore = scoreOfMove;
 				bestSequence = moveSequence;
 			}
-
+			
 			Move move = bestSequence.removeFirst();
 			effectivePlays.add(move);
 			for (JoinFive game : games) {
 				game.play(move.getP1().getCopy(), move.getP2().getCopy());
 			}
-			moves = games.get(0).getMoves();
+			moves = new ArrayList<>(games.get(0).getMoves());
 		}
 		return new Pair<Integer, LinkedList<Move>>(games.get(0).getNumberOfMoves(), effectivePlays);
 	}
@@ -180,7 +186,7 @@ public class NMCS {
 	public static void main(String[] args) {
 		try {
 			NMCS nmcs = NMCS.getInstance(8);
-			Pair<Integer, LinkedList<Move>> result = nmcs.multithreadNested(2, Rule.D);
+			Pair<Integer, LinkedList<Move>> result = nmcs.multithreadNested(1, Rule.D);
 			System.out.println(result.getP1());
 		} catch (InterruptedException e) {
 			e.printStackTrace();

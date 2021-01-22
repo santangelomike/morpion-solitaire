@@ -17,6 +17,7 @@ public class Line implements Iterable<PointCoordinates> {
 	/**
 	 * @param firstPosition the starting point of this line
 	 * @param orientation is the orientation, is it horizontal (going from left to right), vertical (from bottom to top), updiagonal (going up and right), downdiagonal (going bottom and right)
+	 * @throws NullPointerException
 	 */
 	public Line(PointCoordinates firstPosition, Orientation orientation) {
 		checkNotNull(firstPosition);
@@ -29,8 +30,11 @@ public class Line implements Iterable<PointCoordinates> {
 	/**
 	 * @param game the game we want to consider
 	 * @return true if this line can be played according to the actual grid in game, false otherwise
+	 * @throws NullPointerException
 	 */
 	public boolean isValid(JoinFive game) {
+		checkNotNull(game);
+		
 		int i = 0;
 		int numberOverlaps = 0;
 
@@ -97,6 +101,10 @@ public class Line implements Iterable<PointCoordinates> {
 			}
 		};
 	}
+	
+	public Orientation getOrientation() {
+		return orientation;
+	}
 
 	public String toString() {
 		String result = "";
@@ -104,6 +112,18 @@ public class Line implements Iterable<PointCoordinates> {
 			result += p.toString() + ", ";
 		}
 		return result.substring(0, result.length() - 2);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+
+		if (!(o instanceof Line))
+			return false;
+		Line l = (Line) o;
+
+		return firstPosition.equals(l.firstPosition) && orientation == l.orientation;
 	}
 	
 	/**
