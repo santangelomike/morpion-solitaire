@@ -18,8 +18,6 @@ public class MainPanel extends JPanel implements ActionListener {
         menuPanel = new MenuPanel();
         menuPanel.button.addActionListener(this);
 
-        menuPanel.setBackground(Color.RED); // temporary
-
         this.add(menuPanel);
     }
 
@@ -35,9 +33,7 @@ public class MainPanel extends JPanel implements ActionListener {
         remove(menuPanel);
 
         GamePanel gamePanel = new GamePanel(rule);
-
-        gamePanel.setBackground(Color.GREEN); // temporary
-
+        
         add(gamePanel);
 
         repaint();

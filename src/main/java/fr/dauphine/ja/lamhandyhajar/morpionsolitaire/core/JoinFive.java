@@ -1,8 +1,11 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class JoinFive {
 
@@ -11,17 +14,22 @@ public class JoinFive {
     private final List<Line> lines;
     private final int lineLength;
     private Rule rule;
+    // to print the points
+    private final int pointSize = 8;
+    private final int cellSize = 39;
     // bounds of the current grid to print it properly.
     private Integer leftBound;
     private Integer rightBound;
     private Integer upBound;
     private Integer downBound;
+
     public JoinFive(int lineLength) {
         grid = new HashMap<>();
         this.lineLength = lineLength;
         lines = new ArrayList<>();
         initGrid();
     }
+
     public JoinFive(int lineLength, Rule rule) {
         this(lineLength);
         setRule(rule);
@@ -113,5 +121,44 @@ public class JoinFive {
     public enum Rule {
         T,
         D
+    }
+
+    public void drawGrid(Graphics2D g, int w, int h) {
+
+        int halfCellSize = cellSize / 2;
+
+        int xCenter = w / 2;
+        int yCenter = h / 2;
+
+        int xOrigin = xCenter - halfCellSize - 4 * cellSize;
+        int yOrigin = yCenter - halfCellSize - 4 * cellSize;
+
+        g.setColor(Color.WHITE);
+
+        int x = (xCenter - halfCellSize) % cellSize;
+        int y = (yCenter - halfCellSize) % cellSize;
+
+        for (int i = 0; i <= w / cellSize; i++) {
+            g.drawLine(x + i * cellSize, 0, x + i * cellSize, h);
+        }
+
+        for (int i = 0; i <= h / cellSize; i++) {
+            g.drawLine(0, y + i * cellSize, w, y + i * cellSize);
+        }
+
+        g.setColor(Color.DARK_GRAY);
+
+        Iterator<Entry<PointCoordinates, Point>> it = grid.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Entry<PointCoordinates, Point> pair = it.next();
+
+            int xPoint = xOrigin + pair.getKey().p1 * cellSize - (pointSize / 2);
+            int yPoint = yOrigin + pair.getKey().p2 * cellSize - (pointSize / 2);
+
+            g.fillOval(xPoint, yPoint, pointSize, pointSize);
+
+            it.remove();
+        }
     }
 }

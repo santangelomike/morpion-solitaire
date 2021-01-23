@@ -6,8 +6,8 @@ import java.awt.*;
 public class Window extends JFrame {
 
     public Window() throws HeadlessException {
-        this.add(new MainPanel());
-        this.setSize(600, 400);
+        this.add(new MainPanel(), BorderLayout.CENTER);
+        this.setSize(1000, 750);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
