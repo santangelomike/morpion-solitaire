@@ -74,7 +74,6 @@ public class NMCS {
 						moveSequence.add(move);
 						moveSequence.addAll(result.getP2());
 					}
-					game.updateBounds();
 				}
 			}
 			else {
@@ -92,7 +91,6 @@ public class NMCS {
 						moveSequence.add(move);
 						moveSequence.addAll(result.getP2());
 					}
-					game.updateBounds();
 				}
 			}
 			if (scoreOfMove > bestScore) {

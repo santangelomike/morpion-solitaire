@@ -78,7 +78,6 @@ public class NMCSThread implements Runnable {
 			score = result.getP1();
 			sequence.addAll(result.getP2());
 		}
-		game.updateBounds();
 	}
 
 }

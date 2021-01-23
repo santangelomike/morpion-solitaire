@@ -46,10 +46,7 @@ public class JoinFive {
 	 * @throws NullPointerException
 	 */
 	public ArrayList<Move> getMoves() {
-		checkNotNull(leftBound);
-		checkNotNull(rightBound);
-		checkNotNull(downBound);
-		checkNotNull(upBound);
+		updateBounds();
 
 		ArrayList<Move> result = new ArrayList<>();
 		
@@ -133,8 +130,6 @@ public class JoinFive {
 		grid.put(p.getPosition(), p);
 
 		if (persistent) {
-			updateBounds(p.getPosition());
-
 			p.setIndex(getNumberOfMoves());
 		}
 	}
@@ -143,7 +138,7 @@ public class JoinFive {
 	 * updates variables leftBound, rightBound, downBound and upBound according to
 	 * the actual grid
 	 */
-	public void updateBounds() {
+	private void updateBounds() {
 		leftBound = null;
 		rightBound = null;
 		downBound = null;
@@ -257,31 +252,5 @@ public class JoinFive {
 		}
 		removePoint(p);
 		return true;
-	}
-
-	public static void main(String[] args) {
-		JoinFive game;
-		if (args[0].equals("5T"))
-			game = new JoinFive(Rule.T);
-		else
-			game = new JoinFive(Rule.D);
-		Point p1, p2, p3, p4, p5;
-		p1 = new Point(new PointCoordinates(4, 6));
-		p2 = new Point(new PointCoordinates(5, 6));
-		p3 = new Point(new PointCoordinates(3, 10));
-		p4 = new Point(new PointCoordinates(5, 8));
-		p5 = new Point(new PointCoordinates(10, 6));
-
-		// exemple de chevauchement de deux lignes sur un point:
-		// game.getPossibleLines(p2) renvoie deux lignes possibles
-		game.play(game.getPossibleLines(p1).get(0), p1);
-		game.play(game.getPossibleLines(p2).get(1), p2);
-
-		// exemple de wikipedia:
-		/*
-		 * game.play(game.getPossibleLines(p3).get(0), p3);
-		 * game.play(game.getPossibleLines(p4).get(0), p4);
-		 * game.play(game.getPossibleLines(p5).get(0), p5);
-		 */
 	}
 }
