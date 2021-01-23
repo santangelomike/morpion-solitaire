@@ -54,7 +54,7 @@ public class Line implements Iterable<PointCoordinates> {
 				else if (i == 0) {
 					for (Line line : p.getLines().keySet()) {
 						if (line.orientation == orientation) {
-							// il faut que p soit le dernier point de line, auquel cas ça ne fonctionne pas
+							// p needs to be the last point of line, otherwise it doesn't work
 							Point tmp = null;
 							for (PointCoordinates c1 : line) {
 								Point p1 = game.getPoint(c1);

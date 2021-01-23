@@ -3,6 +3,7 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers;
 import java.util.LinkedList;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Move;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
 /**

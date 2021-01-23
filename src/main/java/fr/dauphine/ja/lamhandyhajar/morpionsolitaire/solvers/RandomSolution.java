@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Move;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
@@ -33,9 +34,10 @@ public class RandomSolution {
 			nbPlays++;
 		} while (l.size() != 0);
 		
+		int score = game.getNumberOfMoves();
 		for (int i = 0; i < nbPlays; i++) game.undoPlay();
 		
-		return new Pair<Integer, LinkedList<Move>>(nbPlays, plays);
+		return new Pair<Integer, LinkedList<Move>>(score, plays);
 	}
 	
 	public static void main(String[] args) {

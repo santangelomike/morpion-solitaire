@@ -3,11 +3,8 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers.Move;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -54,56 +51,23 @@ public class JoinFive {
 		checkNotNull(downBound);
 		checkNotNull(upBound);
 
-		int left = leftBound - 1;
-		int right = rightBound + 1;
-		int down = downBound - 1;
-		int up = upBound + 1;
-
-		if (!plays.empty()) {
-			Move lastMove = plays.peek();
-			PointCoordinates lastPointPosition = lastMove.getP2().getPosition();
-
-			Iterator<Move> it = availableMoves.iterator();
-			while (it.hasNext()) {
-				Move move = it.next();
-				if (move.getP2().getPosition().equals(lastMove.getP2().getPosition()))
-					it.remove();
-				else if (move.getP1().getOrientation() == lastMove.getP1().getOrientation()) {
-					Point p = move.getP2();
-					Line l = move.getP1();
-					setPoint(p, false);
-					if (!l.isValid(this))
-						it.remove();
-					removePoint(p);
-				}
-			}
-
-			left = Math.max(left, lastPointPosition.getP1() - 4);
-			right = Math.min(right, lastPointPosition.getP1() + 4);
-			up = Math.min(up, lastPointPosition.getP2() + 4);
-			down = Math.max(down, lastPointPosition.getP2() - 4);
-		}
-
-		for (int x = left; x <= right; x++) {
-			for (int y = up; y >= down; y--) {
+		ArrayList<Move> result = new ArrayList<>();
+		
+		for (int x = leftBound - 1; x <= rightBound + 1; x++) {
+			for (int y = upBound + 1; y >= downBound - 1; y--) {
 				PointCoordinates coord = new PointCoordinates(x, y);
 				Point p = getPoint(coord);
-
+				
 				if (p == null) {
 					p = new Point(coord);
 					List<Line> lines = getPossibleLines(p);
 					for (Line line : lines) {
-						availableMoves.add(new Move(line, p));
+						result.add(new Move(line, p));
 					}
 				}
 			}
 		}
-
-		ArrayList<Move> result = new ArrayList<>();
-		for (Move move : availableMoves) {
-			result.add(move.getCopy());
-		}
-
+		
 		return result;
 	}
 

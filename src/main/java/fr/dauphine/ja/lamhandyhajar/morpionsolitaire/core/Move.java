@@ -1,8 +1,4 @@
-package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers;
-
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Line;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
+package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 /**
  * This class represents a move for the JoinFive game.

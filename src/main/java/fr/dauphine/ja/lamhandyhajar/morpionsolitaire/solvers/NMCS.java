@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Move;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
