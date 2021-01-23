@@ -2,6 +2,7 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 
@@ -106,12 +107,18 @@ public class Line implements Iterable<PointCoordinates> {
 		return orientation;
 	}
 
+	@Override
 	public String toString() {
 		String result = "";
 		for (PointCoordinates p : getPointsPosition()) {
 			result += p.toString() + ", ";
 		}
 		return result.substring(0, result.length() - 2);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstPosition.getP1(), firstPosition.getP2(), orientation);
 	}
 	
 	@Override

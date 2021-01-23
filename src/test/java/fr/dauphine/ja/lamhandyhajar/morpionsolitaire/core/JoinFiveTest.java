@@ -40,13 +40,13 @@ public class JoinFiveTest {
 		JoinFive game = new JoinFive(Rule.D);
 		assertTrue(game.getMoves().size() == 28);
 		
-		Point p1 = new Point(new PointCoordinates(3, 10));
-		game.play(game.getPossibleLines(p1).get(0), p1);
-		assertTrue(game.getMoves().size() == 27);
-		game.undoPlay();
-		
-		p1 = new Point(new PointCoordinates(4, 6));
+		Point p1 = new Point(new PointCoordinates(4, 6));
 		game.play(game.getPossibleLines(p1).get(0), p1);
 		assertTrue(game.getMoves().size() == 26);
+		game.undoPlay();
+		
+		p1 = new Point(new PointCoordinates(3, 10));
+		game.play(game.getPossibleLines(p1).get(0), p1);
+		assertTrue(game.getMoves().size() == 27);
 	}
 }

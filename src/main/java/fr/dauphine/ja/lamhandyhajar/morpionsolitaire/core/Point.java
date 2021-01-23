@@ -3,6 +3,7 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -92,6 +93,11 @@ public class Point {
 	 */
 	public Point getCopy() {
 		return new Point(index, position);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(position.getP1(), position.getP2());
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -10,9 +11,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JoinFive {
 
-	Stack<Move> plays;
+	private Stack<Move> plays;
 
-	HashSet<Move> availableMoves;
+	private HashSet<Move> availableMoves;
 
 	private HashMap<PointCoordinates, Point> grid;
 
@@ -48,23 +49,56 @@ public class JoinFive {
 	public ArrayList<Move> getMoves() {
 		updateBounds();
 
-		ArrayList<Move> result = new ArrayList<>();
-		
-		for (int x = leftBound - 1; x <= rightBound + 1; x++) {
-			for (int y = upBound + 1; y >= downBound - 1; y--) {
+		int left = leftBound - 1;
+		int right = rightBound + 1;
+		int down = downBound - 1;
+		int up = upBound + 1;
+
+		if (!availableMoves.isEmpty() && !plays.empty()) {
+			Move lastMove = plays.peek();
+			PointCoordinates lastPointPosition = lastMove.getP2().getPosition();
+
+			Iterator<Move> it = availableMoves.iterator();
+			while (it.hasNext()) {
+				Move move = it.next();
+				if (move.getP2().getPosition().equals(lastMove.getP2().getPosition()))
+					it.remove();
+				else if (move.getP1().getOrientation() == lastMove.getP1().getOrientation()) {
+					Point p = move.getP2();
+					Line l = move.getP1();
+					setPoint(p);
+					if (!l.isValid(this))
+						it.remove();
+					removePoint(p);
+				}
+			}
+
+			left = Math.max(left, lastPointPosition.getP1() - 4);
+			right = Math.min(right, lastPointPosition.getP1() + 4);
+			up = Math.min(up, lastPointPosition.getP2() + 4);
+			down = Math.max(down, lastPointPosition.getP2() - 4);
+		}
+
+		for (int x = left; x <= right; x++) {
+			for (int y = up; y >= down; y--) {
 				PointCoordinates coord = new PointCoordinates(x, y);
 				Point p = getPoint(coord);
-				
+
 				if (p == null) {
 					p = new Point(coord);
 					List<Line> lines = getPossibleLines(p);
 					for (Line line : lines) {
-						result.add(new Move(line, p));
+						availableMoves.add(new Move(line, p));
 					}
 				}
 			}
 		}
-		
+
+		ArrayList<Move> result = new ArrayList<>();
+		for (Move move : availableMoves) {
+			result.add(move.getCopy());
+		}
+
 		return result;
 	}
 
@@ -101,7 +135,7 @@ public class JoinFive {
 			for (int c = 0; c < 10; c++)
 				if ((basePoints[r] & (1 << c)) != 0) {
 					Point p = new Point(0, new PointCoordinates(c, r));
-					setPoint(p, true);
+					setPoint(p);
 				}
 	}
 
@@ -120,18 +154,13 @@ public class JoinFive {
 	 * Sets a point in the grid.
 	 * 
 	 * @param p
-	 * @param persistent is true iff we consider that this point is permanently
-	 *                   added to the grid
 	 * @throws NullPointerException
 	 */
-	private void setPoint(Point p, boolean persistent) {
+	private void setPoint(Point p) {
 		checkNotNull(p);
 
 		grid.put(p.getPosition(), p);
-
-		if (persistent) {
-			p.setIndex(getNumberOfMoves());
-		}
+		p.setIndex(getNumberOfMoves());
 	}
 
 	/**
@@ -186,7 +215,7 @@ public class JoinFive {
 
 		possibleLines = newPoint.getAllPossibleLines();
 
-		setPoint(newPoint, false);
+		setPoint(newPoint);
 		for (Line line : possibleLines) {
 			if (line.isValid(this)) {
 				lines.add(line);
@@ -212,7 +241,7 @@ public class JoinFive {
 		if (getPoint(p.getPosition()) != null)
 			throw new IllegalArgumentException("There is already a point where you want to play.");
 
-		setPoint(p, true);
+		setPoint(p);
 		linesOnGrid.add(line);
 		int i = 0;
 		for (PointCoordinates c1 : line) {
@@ -238,6 +267,8 @@ public class JoinFive {
 	 * @return true if there was a move in the grid to undo, false otherwise
 	 */
 	public boolean undoPlay() {
+		availableMoves.clear();
+		
 		if (plays.empty())
 			return false;
 

@@ -172,6 +172,7 @@ public class NMCS {
 				bestSequence = moveSequence;
 			}
 			
+			System.out.println("play move");
 			Move move = bestSequence.removeFirst();
 			effectivePlays.add(move);
 			for (JoinFive game : games) {
@@ -185,7 +186,7 @@ public class NMCS {
 	public static void main(String[] args) {
 		try {
 			NMCS nmcs = NMCS.getInstance(8);
-			Pair<Integer, LinkedList<Move>> result = nmcs.multithreadNested(1, Rule.D);
+			Pair<Integer, LinkedList<Move>> result = nmcs.multithreadNested(2, Rule.D);
 			System.out.println(result.getP1());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
