@@ -1,208 +1,287 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Stack;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JoinFive {
 
-    private final HashMap<PointCoordinates, Point> grid;
-    // to print the grid with the lines
-    private final List<Line> lines;
-    private final int lineLength;
-    private Rule rule;
-    // to print the points
-    private final int pointSize = 8;
-    private final int cellSize = 39;
-    // bounds of the current grid to print it properly.
-    private Integer leftBound;
-    private Integer rightBound;
-    private Integer upBound;
-    private Integer downBound;
+	private Stack<Move> plays;
 
-    public JoinFive(int lineLength) {
-        grid = new HashMap<>();
-        this.lineLength = lineLength;
-        lines = new ArrayList<>();
-        initGrid();
+	private HashSet<Move> availableMoves;
 
-        Point p1, p2, p3, p4, p5;
-        p1 = new Point(1, new PointCoordinates(4, 6), this);
-        p2 = new Point(2, new PointCoordinates(5, 6), this);
-        p3 = new Point(3, new PointCoordinates(3, 10), this);
-        p4 = new Point(4, new PointCoordinates(5, 8), this);
-        p5 = new Point(5, new PointCoordinates(10, 6), this);
+	private HashMap<PointCoordinates, Point> grid;
 
-        addLine(getPossibleLines(p1).get(0), p1);
-        addLine(getPossibleLines(p2).get(0), p2);
-    }
+	// to print the grid with the lines
+	private List<Line> linesOnGrid;
 
-    public JoinFive(int lineLength, Rule rule) {
-        this(lineLength);
-        setRule(rule);
-    }
+	private static int lineLength = 5;
 
-    public Rule getRule() {
-        return rule;
-    }
+	// bounds of the current grid to print it properly.
+	private Integer leftBound;
+	private Integer rightBound;
+	private Integer upBound;
+	private Integer downBound;
 
-    public void setRule(Rule rule) {
-        this.rule = rule;
-    }
+	public int getNumberOfMoves() {
+		return grid.size() - 36;
+	}
 
-    public int getLineLength() {
-        return lineLength;
-    }
+	private Rule rule;
 
-    private void initGrid() {
-        final int[] basePoints = {120, 72, 72, 975, 513, 513, 975, 72, 72, 120};
-        for (int r = 0; r < 10; r++)
-            for (int c = 0; c < 10; c++)
-                if ((basePoints[r] & (1 << c)) != 0) {
-                    Point p = new Point(0, new PointCoordinates(c, r), this);
-                    setPoint(p);
-                }
-    }
+	public enum Rule {
+		T, D;
+	}
 
-    public Point getPoint(PointCoordinates position) {
-        return grid.get(position);
-    }
+	public Rule getRule() {
+		return rule;
+	}
 
-    private void setPoint(Point p) {
-        int p1 = p.getPosition().getP1();
-        int p2 = p.getPosition().getP2();
-        leftBound = (leftBound != null) ? Math.min(leftBound, p1) : p1;
-        rightBound = (rightBound != null) ? Math.max(rightBound, p1) : p1;
-        downBound = (downBound != null) ? Math.min(downBound, p2) : p2;
-        upBound = (upBound != null) ? Math.max(upBound, p2) : p2;
+	/**
+	 * @return the available moves at the current state of the game
+	 * @throws NullPointerException
+	 */
+	public ArrayList<Move> getMoves() {
+		updateBounds();
 
-        System.out.println("set " + p.getPosition());
-        grid.put(p.getPosition(), p);
-    }
+		int left = leftBound - 1;
+		int right = rightBound + 1;
+		int down = downBound - 1;
+		int up = upBound + 1;
 
-    private void removePoint(Point p) {
-        int p1 = p.getPosition().getP1();
-        int p2 = p.getPosition().getP2();
-        System.out.println("remove: " + p1 + ", " + p2);
-        grid.remove(p.getPosition());
-    }
+		if (!availableMoves.isEmpty() && !plays.empty()) {
+			Move lastMove = plays.peek();
+			PointCoordinates lastPointPosition = lastMove.getP2().getPosition();
 
-    /*
-     * Given a position of a point, returns the available lines or an empty list if
-     * the point is not valid
-     */
-    public List<Line> getPossibleLines(Point newPoint) {
-        List<Line> possibleLines;
-        List<Line> lines = new ArrayList<>();
+			Iterator<Move> it = availableMoves.iterator();
+			while (it.hasNext()) {
+				Move move = it.next();
+				if (move.getP2().getPosition().equals(lastMove.getP2().getPosition()))
+					it.remove();
+				else if (move.getP1().getOrientation() == lastMove.getP1().getOrientation()) {
+					Point p = move.getP2();
+					Line l = move.getP1();
+					setPoint(p);
+					if (!l.isValid(this))
+						it.remove();
+					removePoint(p);
+				}
+			}
 
-        if (getPoint(newPoint.getPosition()) != null) {
-            System.out.println("bruh");
-            return lines;
-        }
+			left = Math.max(left, lastPointPosition.getP1() - 4);
+			right = Math.min(right, lastPointPosition.getP1() + 4);
+			up = Math.min(up, lastPointPosition.getP2() + 4);
+			down = Math.max(down, lastPointPosition.getP2() - 4);
+		}
 
-        possibleLines = newPoint.getAllPossibleLines();
+		for (int x = left; x <= right; x++) {
+			for (int y = up; y >= down; y--) {
+				PointCoordinates coord = new PointCoordinates(x, y);
+				Point p = getPoint(coord);
 
-        setPoint(newPoint);
-        for (Line line : possibleLines) {
-            if (line.isValid()) {
-                lines.add(line);
-            }
-        }
-        removePoint(newPoint);
+				if (p == null) {
+					p = new Point(coord);
+					List<Line> lines = getPossibleLines(p);
+					for (Line line : lines) {
+						availableMoves.add(new Move(line, p));
+					}
+				}
+			}
+		}
 
-        return lines;
-    }
+		ArrayList<Move> result = new ArrayList<>();
+		for (Move move : availableMoves) {
+			result.add(move.getCopy());
+		}
 
-    /*
-     * Adds a line to the grid, with its new corresponding point
-     */
-    public void addLine(Line line, Point p) {
-        setPoint(p);
-        lines.add(line);
-        int i = 0;
-        for (Point p1 : line) {
-            p1.addLine(line, i++);
-        }
-    }
+		return result;
+	}
 
-    public enum Rule {
-        T,
-        D
-    }
+	/**
+	 * @return the number of points a line has to contain (fixed to 5)
+	 */
+	public static int getLineLength() {
+		return lineLength;
+	}
 
-    public void drawGrid(Graphics2D g, int w, int h) {
+	private JoinFive() {
+		plays = new Stack<Move>();
+		availableMoves = new HashSet<Move>();
+		grid = new HashMap<>();
+		linesOnGrid = new ArrayList<Line>();
+		initGrid();
+	}
 
-        int halfCellSize = cellSize / 2;
+	/**
+	 * @param rule T for 5T, D for 5D
+	 */
+	public JoinFive(Rule rule) {
+		this();
+		this.rule = rule;
+	}
 
-        int xCenter = w / 2;
-        int yCenter = h / 2;
+	/**
+	 * Initializes the grid of this instance with the usual grid from the JoinFive
+	 * game. Code inspired from: https://rosettacode.org/wiki/Morpion_solitaire/Java
+	 */
+	private void initGrid() {
+		final int[] basePoints = { 120, 72, 72, 975, 513, 513, 975, 72, 72, 120 };
+		for (int r = 0; r < 10; r++)
+			for (int c = 0; c < 10; c++)
+				if ((basePoints[r] & (1 << c)) != 0) {
+					Point p = new Point(0, new PointCoordinates(c, r));
+					setPoint(p);
+				}
+	}
 
-        int xOrigin = xCenter - halfCellSize - 4 * cellSize;
-        int yOrigin = yCenter - halfCellSize - 4 * cellSize;
+	/**
+	 * @param position of the point
+	 * @return the point in the grid, or null if not found
+	 * @throws NullPointerException
+	 */
+	public Point getPoint(PointCoordinates position) {
+		checkNotNull(position);
 
-        g.setColor(Color.WHITE);
+		return grid.get(position);
+	}
 
-        int x = (xCenter - halfCellSize) % cellSize;
-        int y = (yCenter - halfCellSize) % cellSize;
+	/**
+	 * Sets a point in the grid.
+	 * 
+	 * @param p
+	 * @throws NullPointerException
+	 */
+	private void setPoint(Point p) {
+		checkNotNull(p);
 
-        for (int i = 0; i <= w / cellSize; i++) {
-            g.drawLine(x + i * cellSize, 0, x + i * cellSize, h);
-        }
+		grid.put(p.getPosition(), p);
+		p.setIndex(getNumberOfMoves());
+	}
 
-        for (int i = 0; i <= h / cellSize; i++) {
-            g.drawLine(0, y + i * cellSize, w, y + i * cellSize);
-        }
+	/**
+	 * updates variables leftBound, rightBound, downBound and upBound according to
+	 * the actual grid
+	 */
+	private void updateBounds() {
+		leftBound = null;
+		rightBound = null;
+		downBound = null;
+		upBound = null;
 
-        g.setColor(Color.DARK_GRAY);
+		for (PointCoordinates pc : grid.keySet()) {
+			updateBounds(pc);
+		}
+	}
+	
+	private void updateBounds(PointCoordinates pc) {
+		int p1 = pc.getP1();
+		int p2 = pc.getP2();
 
-        Iterator<Entry<PointCoordinates, Point>> it = grid.entrySet().iterator();
+		leftBound = (leftBound != null) ? Math.min(leftBound, p1) : p1;
+		rightBound = (rightBound != null) ? Math.max(rightBound, p1) : p1;
+		downBound = (downBound != null) ? Math.min(downBound, p2) : p2;
+		upBound = (upBound != null) ? Math.max(upBound, p2) : p2;
+	}
 
-        while (it.hasNext()) {
-            Entry<PointCoordinates, Point> pair = it.next();
+	/**
+	 * @param p
+	 * @throws NullPointerException
+	 */
+	private void removePoint(Point p) {
+		checkNotNull(p);
 
-            int xPoint = xOrigin + pair.getKey().p1 * cellSize - (pointSize / 2);
-            int yPoint = yOrigin + pair.getKey().p2 * cellSize - (pointSize / 2);
+		grid.remove(p.getPosition());
+	}
 
-            g.fillOval(xPoint, yPoint, pointSize, pointSize);
+	/**
+	 * Given a point, returns the playable lines according to the actual state of
+	 * the game, or an empty list if there isn't any move available for this point
+	 * 
+	 * @throws NullPointerException
+	 */
+	public List<Line> getPossibleLines(Point newPoint) {
+		checkNotNull(newPoint);
 
-            Iterator<Entry<Line, Integer>> linesIt = pair.getValue().getLines().entrySet().iterator();
+		List<Line> possibleLines = null;
+		List<Line> lines = new ArrayList<Line>();
 
-            g.setColor(Color.BLACK);
+		if (getPoint(newPoint.getPosition()) != null)
+			return lines;
 
-            while (linesIt.hasNext()) {
-                Entry<Line, Integer> line = linesIt.next();
+		possibleLines = newPoint.getAllPossibleLines();
 
-                Iterator<Point> pointsIt = line.getKey().iterator();
+		setPoint(newPoint);
+		for (Line line : possibleLines) {
+			if (line.isValid(this)) {
+				lines.add(line);
+			}
+		}
+		removePoint(newPoint);
 
-                Point oldPoint = null;
+		return lines;
+	}
 
-                while (pointsIt.hasNext()) {
+	/**
+	 * Adds a line to the grid, with its new corresponding point
+	 * 
+	 * @param line
+	 * @param p
+	 * @throws IllegalArgumentException if the move can't be done
+	 * @throws NullPointerException
+	 */
+	public void play(Line line, Point p) {
+		checkNotNull(line);
+		checkNotNull(p);
 
-                    Point point = pointsIt.next();
+		if (getPoint(p.getPosition()) != null)
+			throw new IllegalArgumentException("There is already a point where you want to play.");
 
-                    if (oldPoint == null) {
-                        oldPoint = point;
-                        continue;
-                    }
+		setPoint(p);
+		linesOnGrid.add(line);
+		int i = 0;
+		for (PointCoordinates c1 : line) {
+			Point p1 = getPoint(c1);
+			if (p1 == null)
+				throw new IllegalArgumentException("This line is not valid.");
+			p1.addLine(line, i++);
+		}
+		plays.push(new Move(line, p));
+	}
 
-                    int x1 = xOrigin + oldPoint.getPosition().p1 * cellSize;
-                    int y1 = yOrigin + oldPoint.getPosition().p2 * cellSize;
+	/**
+	 * @param move
+	 * @throws NullPointerException
+	 */
+	public void play(Move move) {
+		checkNotNull(move);
 
-                    int x2 = xOrigin + point.getPosition().p1 * cellSize;
-                    int y2 = yOrigin + point.getPosition().p2 * cellSize;
+		play(move.getP1(), move.getP2());
+	}
 
-                    oldPoint = point;
+	/**
+	 * @return true if there was a move in the grid to undo, false otherwise
+	 */
+	public boolean undoPlay() {
+		availableMoves.clear();
+		
+		if (plays.empty())
+			return false;
 
-                    g.drawLine(x1, y1, x2, y2);
+		Move play = plays.pop();
+		Point p = play.getP2();
+		Line line = play.getP1();
 
-                    pointsIt.remove();
-                }
-                linesIt.remove();
-            }
-            it.remove();
-        }
-    }
+		linesOnGrid.remove(line);
+		for (PointCoordinates c1 : line) {
+			Point p1 = getPoint(c1);
+			p1.removeLine(line);
+		}
+		removePoint(p);
+		return true;
+	}
 }
