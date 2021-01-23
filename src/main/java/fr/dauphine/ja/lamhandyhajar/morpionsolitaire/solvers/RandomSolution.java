@@ -1,7 +1,6 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers;
 
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Move;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Pair;
 
@@ -39,10 +38,5 @@ public class RandomSolution {
         for (int i = 0; i < nbPlays; i++) game.undoPlay();
 
         return new Pair<Integer, LinkedList<Move>>(score, plays);
-    }
-
-    public static void main(String[] args) {
-        JoinFive game = new JoinFive(Rule.D);
-        System.out.println(sample(game).getP1());
     }
 }

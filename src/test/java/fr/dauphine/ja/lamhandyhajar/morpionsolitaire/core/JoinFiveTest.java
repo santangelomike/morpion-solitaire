@@ -1,10 +1,9 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
-
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive.Rule;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 
 public class JoinFiveTest {
