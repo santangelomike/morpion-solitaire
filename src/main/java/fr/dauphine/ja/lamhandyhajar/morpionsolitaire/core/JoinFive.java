@@ -28,6 +28,16 @@ public class JoinFive {
         this.lineLength = lineLength;
         lines = new ArrayList<>();
         initGrid();
+
+        Point p1, p2, p3, p4, p5;
+        p1 = new Point(1, new PointCoordinates(4, 6), this);
+        p2 = new Point(2, new PointCoordinates(5, 6), this);
+        p3 = new Point(3, new PointCoordinates(3, 10), this);
+        p4 = new Point(4, new PointCoordinates(5, 8), this);
+        p5 = new Point(5, new PointCoordinates(10, 6), this);
+
+        addLine(getPossibleLines(p1).get(0), p1);
+        addLine(getPossibleLines(p2).get(0), p2);
     }
 
     public JoinFive(int lineLength, Rule rule) {
@@ -158,6 +168,40 @@ public class JoinFive {
 
             g.fillOval(xPoint, yPoint, pointSize, pointSize);
 
+            Iterator<Entry<Line, Integer>> linesIt = pair.getValue().getLines().entrySet().iterator();
+
+            g.setColor(Color.BLACK);
+
+            while (linesIt.hasNext()) {
+                Entry<Line, Integer> line = linesIt.next();
+
+                Iterator<Point> pointsIt = line.getKey().iterator();
+
+                Point oldPoint = null;
+
+                while (pointsIt.hasNext()) {
+
+                    Point point = pointsIt.next();
+
+                    if (oldPoint == null) {
+                        oldPoint = point;
+                        continue;
+                    }
+
+                    int x1 = xOrigin + oldPoint.getPosition().p1 * cellSize;
+                    int y1 = yOrigin + oldPoint.getPosition().p2 * cellSize;
+
+                    int x2 = xOrigin + point.getPosition().p1 * cellSize;
+                    int y2 = yOrigin + point.getPosition().p2 * cellSize;
+
+                    oldPoint = point;
+
+                    g.drawLine(x1, y1, x2, y2);
+
+                    pointsIt.remove();
+                }
+                linesIt.remove();
+            }
             it.remove();
         }
     }
