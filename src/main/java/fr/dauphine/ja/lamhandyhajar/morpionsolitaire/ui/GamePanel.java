@@ -24,31 +24,6 @@ public class GamePanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-//                switch (gameState) {
-//                    case START:
-//                        gameState = State.HUMAN;
-//                        message = "Your turn";
-//                        playerScore = botScore = 0;
-//                        grid.newGame();
-//                        break;
-//                    case HUMAN:
-//                        if (SwingUtilities.isRightMouseButton(e))
-//                            grid.showHints();
-//                        else {
-//                            Grid.Result res = grid.playerMove(e.getX(), e.getY());
-//                            if (res == Grid.Result.GOOD) {
-//                                playerScore++;
-//
-//                                if (grid.possibleMoves().isEmpty())
-//                                    gameState = State.OVER;
-//                                else {
-//                                    gameState = State.BOT;
-//                                    message = "Computer plays...";
-//                                }
-//                            }
-//                        }
-//                        break;
-//                }
 
                 int x = Math.round((e.getX() - xOrigin) / cellSize);
                 int y = Math.round((e.getY() - yOrigin) / cellSize);
