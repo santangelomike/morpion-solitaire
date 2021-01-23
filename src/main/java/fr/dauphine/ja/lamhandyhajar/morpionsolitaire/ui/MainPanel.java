@@ -17,6 +17,7 @@ public class MainPanel extends JPanel implements ActionListener {
 
         menuPanel = new MenuPanel();
         menuPanel.button.addActionListener(this);
+        menuPanel.radioButtons.get(0).setSelected(true);
 
         this.add(menuPanel);
     }

@@ -1,20 +1,75 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.ui;
 
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.PointCoordinates;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.Map;
 
 public class GamePanel extends JPanel {
 
     private final JoinFive game;
+    private final int pointSize = 8;
+    private final int cellSize = 39;
+    private final int halfCellSize = cellSize / 2;
+    private int xCenter, yCenter, xOrigin, yOrigin;
 
     public GamePanel(JoinFive.Rule rule) {
         game = new JoinFive(rule);
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+//                switch (gameState) {
+//                    case START:
+//                        gameState = State.HUMAN;
+//                        message = "Your turn";
+//                        playerScore = botScore = 0;
+//                        grid.newGame();
+//                        break;
+//                    case HUMAN:
+//                        if (SwingUtilities.isRightMouseButton(e))
+//                            grid.showHints();
+//                        else {
+//                            Grid.Result res = grid.playerMove(e.getX(), e.getY());
+//                            if (res == Grid.Result.GOOD) {
+//                                playerScore++;
+//
+//                                if (grid.possibleMoves().isEmpty())
+//                                    gameState = State.OVER;
+//                                else {
+//                                    gameState = State.BOT;
+//                                    message = "Computer plays...";
+//                                }
+//                            }
+//                        }
+//                        break;
+//                }
+
+                int x = Math.round((e.getX() - xOrigin) / cellSize);
+                int y = Math.round((e.getY() - yOrigin) / cellSize);
+
+                PointCoordinates coordinates = new PointCoordinates(x, y);
+
+                Point point = new Point(coordinates);
+
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    showPossibilities(point);
+                } else {
+                    Line line = game.getPossibleLines(point).get(0); // TODO
+
+                    Move move = new Move(line, point);
+
+                    game.play(move);
+                }
+                repaint();
+            }
+        });
+
         StartGame();
     }
 
@@ -34,18 +89,13 @@ public class GamePanel extends JPanel {
     }
 
     public void drawGrid(Graphics2D g) {
-        final int pointSize = 8;
-        final int cellSize = 39;
-
-        int halfCellSize = cellSize / 2;
-
-        int xCenter = getWidth() / 2;
-        int yCenter = getHeight() / 2;
-
-        int xOrigin = xCenter - halfCellSize - 4 * cellSize;
-        int yOrigin = yCenter - halfCellSize - 4 * cellSize;
-
         g.setColor(Color.WHITE);
+
+        xCenter = getWidth() / 2;
+        yCenter = getHeight() / 2;
+
+        xOrigin = xCenter - halfCellSize - 4 * cellSize;
+        yOrigin = yCenter - halfCellSize - 4 * cellSize;
 
         int x = (xCenter - halfCellSize) % cellSize;
         int y = (yCenter - halfCellSize) % cellSize;
@@ -70,41 +120,43 @@ public class GamePanel extends JPanel {
 
             g.fillOval(xPoint, yPoint, pointSize, pointSize);
 
-//            Iterator<Map.Entry<Line, Integer>> linesIt = pair.getValue().getLines().entrySet().iterator();
+            Iterator<Map.Entry<Line, Integer>> linesIt = pair.getValue().getLines().entrySet().iterator();
 
-//            g.setColor(Color.BLACK);
+            g.setColor(Color.BLACK);
 
-//            while (linesIt.hasNext()) {
-//                Entry<Line, Integer> line = linesIt.next();
-//
-//                Iterator<Point> pointsIt = line.getKey().iterator();
-//
-//                Point oldPoint = null;
-//
-//                while (pointsIt.hasNext()) {
-//
-//                    Point point = pointsIt.next();
-//
-//                    if (oldPoint == null) {
-//                        oldPoint = point;
-//                        continue;
-//                    }
-//
-//                    int x1 = xOrigin + oldPoint.getPosition().p1 * cellSize;
-//                    int y1 = yOrigin + oldPoint.getPosition().p2 * cellSize;
-//
-//                    int x2 = xOrigin + point.getPosition().p1 * cellSize;
-//                    int y2 = yOrigin + point.getPosition().p2 * cellSize;
-//
-//                    oldPoint = point;
-//
-//                    g.drawLine(x1, y1, x2, y2);
-//
-//                    pointsIt.remove();
-//                }
-//                linesIt.remove();
-//            }
-//            it.remove();
+            while (linesIt.hasNext()) {
+                Map.Entry<Line, Integer> line = linesIt.next();
+
+                Iterator<PointCoordinates> pointsIt = line.getKey().iterator();
+
+                PointCoordinates oldPoint = null;
+
+                while (pointsIt.hasNext()) {
+
+                    PointCoordinates point = pointsIt.next();
+
+                    if (oldPoint == null) {
+                        oldPoint = point;
+                        continue;
+                    }
+
+                    int x1 = xOrigin + oldPoint.getP1() * cellSize;
+                    int y1 = yOrigin + oldPoint.getP2() * cellSize;
+
+                    int x2 = xOrigin + point.getP1() * cellSize;
+                    int y2 = yOrigin + point.getP2() * cellSize;
+
+                    oldPoint = point;
+
+                    g.drawLine(x1, y1, x2, y2);
+                }
+            }
+        }
+    }
+
+    public void showPossibilities(Point point) {
+        for (Line line : game.getPossibleLines(point)) {
+            System.out.println("test"); // TODO
         }
     }
 }
