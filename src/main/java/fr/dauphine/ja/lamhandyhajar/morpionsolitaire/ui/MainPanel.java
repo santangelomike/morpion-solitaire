@@ -33,7 +33,7 @@ public class MainPanel extends JPanel implements ActionListener {
         remove(menuPanel);
 
         GamePanel gamePanel = new GamePanel(rule);
-        
+
         add(gamePanel);
 
         repaint();
