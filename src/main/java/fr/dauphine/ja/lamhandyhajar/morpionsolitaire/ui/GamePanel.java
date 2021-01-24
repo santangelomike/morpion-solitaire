@@ -87,7 +87,8 @@ public class GamePanel extends JPanel {
                         message = "New line added : " + line.toString();
 
                         if (game.getMoves().isEmpty()) {
-                            message = "Finished games with " + game.getNumberOfMoves() + " points";
+                            JFrame f = new JFrame();
+                            JOptionPane.showMessageDialog(f, "Finished games with " + game.getNumberOfMoves() + " points");
                         }
                     } catch (IllegalArgumentException exception) {
                         message = exception.getMessage();
