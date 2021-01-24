@@ -5,8 +5,11 @@ import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -19,6 +22,8 @@ public class GamePanel extends JPanel {
     private final int halfCellSize = cellSize / 2;
     private int xCenter, yCenter, xOrigin, yOrigin;
     private String message = "Debut de la partie";
+    private ArrayList<Line> possibleLines = null;
+    private Point currentPoint = null;
 
     public GamePanel(JoinFive.Rule rule) {
         game = new JoinFive(rule);
@@ -34,38 +39,70 @@ public class GamePanel extends JPanel {
 
                 Point point = new Point(coordinates);
 
+                currentPoint = point;
+
                 if (game.getPossibleLines(point).isEmpty()) {
                     message = "Pas de possibilite";
                 } else {
-                    if (SwingUtilities.isRightMouseButton(e)) {
-                        message = "Possibilites : ";
 
-                        for (Line l : game.getPossibleLines(point)) {
-                            message += l.toString();
-                        }
-                    } else {
-                        for (Line l : game.getPossibleLines(point)) {
+                    message = "Possibilites : ";
 
-                            Iterator<PointCoordinates> it = l.iterator();
+                    possibleLines = new ArrayList<>();
 
-                            while (it.hasNext()) {
-                                PointCoordinates pc = it.next();
-
-                                if (pc.getP1() == coordinates.getP1() && pc.getP2() == coordinates.getP2()) {
-                                    message = "Succes";
-
-                                    Move move = new Move(l, point);
-
-                                    game.play(move);
-                                }
-                            }
-                        }
+                    for (Line l : game.getPossibleLines(point)) {
+                        message += l.toString();
+                        possibleLines.add(l);
                     }
                 }
 
                 repaint();
+                requestFocus();
             }
         });
+
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+                if (possibleLines == null) {
+                    return;
+                }
+
+                int position = e.getKeyChar() - 48;
+
+                try {
+                    Line line = possibleLines.get(position - 1);
+
+                    try {
+                        Move move = new Move(line, currentPoint);
+
+                        game.play(move);
+
+                        message = "Ligne tracee : " + line.toString();
+                    } catch (IllegalArgumentException exception) {
+                        message = exception.getMessage();
+                    }
+
+                } catch (IndexOutOfBoundsException exception) {
+                    message = "Pas de possibilite numero " + position;
+                }
+
+                possibleLines = null;
+
+                repaint();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+        setFocusable(true);
+        requestFocus();
 
         StartGame();
     }
