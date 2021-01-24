@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+	<project basedir="." default="build" name="morpion-solitaire">
+    
+    <condition property="isWindows">
+    	<os family="windows" />
+	</condition>
+
+	<condition property="isUnix">
+    	<os family="unix" />
+	</condition>
+
+	<target name="build" depends="mvn_windows, mvn_unix, javadoc_windows, javadoc_unix"/>
+
+	<target name="mvn_windows" if="isWindows">
+	    <exec dir="." executable="cmd">
+	        <arg line="/c mvn clean compile assembly:single" />
+	    </exec>
+	</target>
+
+	<target name="javadoc_windows" if="isWindows">
+	    <exec dir="." executable="cmd">
+	        <arg line="/c mvn javadoc:javadoc" />
+	    </exec>
+	</target>
+
+	<target name="javadoc_unix" if="isUnix">
+	    <exec dir="." executable="sh">
+	        <arg line="-c 'mvn javadoc:javadoc'" />
+	    </exec>
+	</target>
+
+	<target name="mvn_unix" if="isUnix">
+	    <exec dir="." executable="sh">
+	        <arg line="-c 'mvn clean compile assembly:single'" />
+	    </exec>
+	</target>
+</project>

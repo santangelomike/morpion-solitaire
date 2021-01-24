@@ -174,7 +174,6 @@ public class NMCS {
                 bestSequence = moveSequence;
             }
 
-            System.out.println("play move");
             Move move = bestSequence.removeFirst();
             effectivePlays.add(move);
             for (JoinFive game : games) {
