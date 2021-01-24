@@ -1,7 +1,9 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.ui;
 
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Line;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.*;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.PointCoordinates;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,7 @@ public class GamePanel extends JPanel {
     private final int cellSize = 39;
     private final int halfCellSize = cellSize / 2;
     private int xCenter, yCenter, xOrigin, yOrigin;
+    private String message = "Debut de la partie";
 
     public GamePanel(JoinFive.Rule rule) {
         game = new JoinFive(rule);
@@ -32,15 +35,22 @@ public class GamePanel extends JPanel {
 
                 Point point = new Point(coordinates);
 
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    showPossibilities(point);
+                if (game.getPossibleLines(point).isEmpty()) {
+                    message = "No possibilities";
                 } else {
-                    Line line = game.getPossibleLines(point).get(0); // TODO
-
-                    Move move = new Move(line, point);
-
-                    game.play(move);
+                    message = "";
+                    for (Line line : game.getPossibleLines(point)) {
+                        message += line.toString();
+                    }
                 }
+//                for (Line line : game.getPossibleLines(point)) {
+//                    System.out.println("test"); // TODO
+//                }
+//
+//                Move move = new Move(line, point);
+//
+//                game.play(move);
+
                 repaint();
             }
         });
@@ -60,7 +70,17 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         drawGrid((Graphics2D) g);
+
+        g.setColor(Color.white);
+        g.fillRect(0, getHeight() - 50, getWidth(), getHeight() - 50);
+
+        g.setColor(Color.lightGray);
+        g.drawLine(0, getHeight() - 50, getWidth(), getHeight() - 50);
+
+        g.setColor(Color.darkGray);
+        g.drawString(message, 20, getHeight() - 18);
     }
 
     public void drawGrid(Graphics2D g) {
@@ -126,12 +146,6 @@ public class GamePanel extends JPanel {
                     g.drawLine(x1, y1, x2, y2);
                 }
             }
-        }
-    }
-
-    public void showPossibilities(Point point) {
-        for (Line line : game.getPossibleLines(point)) {
-            System.out.println("test"); // TODO
         }
     }
 }
