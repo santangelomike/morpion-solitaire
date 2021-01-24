@@ -22,7 +22,7 @@ public class GamePanel extends JPanel {
     private final int cellSize = 39;
     private final int halfCellSize = cellSize / 2;
     private int xCenter, yCenter, xOrigin, yOrigin;
-    private String message = "Debut de la partie";
+    private String message = "Game started";
     private ArrayList<Line> possibleLines = null;
     private Point currentPoint = null;
 
