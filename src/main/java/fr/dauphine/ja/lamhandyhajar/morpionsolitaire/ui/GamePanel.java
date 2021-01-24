@@ -37,20 +37,27 @@ public class GamePanel extends JPanel {
                 if (game.getPossibleLines(point).isEmpty()) {
                     message = "Pas de possibilite";
                 } else {
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        message = "Possibilites : ";
 
-                    for (Line l : game.getPossibleLines(point)) {
+                        for (Line l : game.getPossibleLines(point)) {
+                            message += l.toString();
+                        }
+                    } else {
+                        for (Line l : game.getPossibleLines(point)) {
 
-                        Iterator<PointCoordinates> it = l.iterator();
+                            Iterator<PointCoordinates> it = l.iterator();
 
-                        while (it.hasNext()) {
-                            PointCoordinates pc = it.next();
+                            while (it.hasNext()) {
+                                PointCoordinates pc = it.next();
 
-                            if (pc.getP1() == coordinates.getP1() && pc.getP2() == coordinates.getP2()) {
-                                message = "Succes";
+                                if (pc.getP1() == coordinates.getP1() && pc.getP2() == coordinates.getP2()) {
+                                    message = "Succes";
 
-                                Move move = new Move(l, point);
+                                    Move move = new Move(l, point);
 
-                                game.play(move);
+                                    game.play(move);
+                                }
                             }
                         }
                     }
