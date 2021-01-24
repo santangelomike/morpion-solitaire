@@ -1,9 +1,8 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core;
 
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 
 public class PointCoordinatesTest {

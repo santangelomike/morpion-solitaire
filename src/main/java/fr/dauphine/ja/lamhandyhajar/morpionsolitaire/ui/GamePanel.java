@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class GamePanel extends JPanel {
 
-    private final JoinFive game;
+	private static final long serialVersionUID = 1L;
+	private final JoinFive game;
     private final int pointSize = 8;
     private final int cellSize = 39;
     private final int halfCellSize = cellSize / 2;

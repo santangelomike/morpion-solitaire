@@ -41,16 +41,6 @@ public class NMCS {
         return instance;
     }
 
-    public static void main(String[] args) {
-        try {
-            NMCS nmcs = NMCS.getInstance(8);
-            Pair<Integer, LinkedList<Move>> result = nmcs.multithreadNested(2, Rule.D);
-            System.out.println(result.getP1());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * NMCS algorithm: https://www.lamsade.dauphine.fr/~cazenave/papers/nested.pdf
      *

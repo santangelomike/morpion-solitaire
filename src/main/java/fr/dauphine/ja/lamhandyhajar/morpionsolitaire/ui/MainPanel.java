@@ -9,7 +9,8 @@ import java.awt.event.ActionListener;
 
 public class MainPanel extends JPanel implements ActionListener {
 
-    private final MenuPanel menuPanel;
+	private static final long serialVersionUID = 1L;
+	private final MenuPanel menuPanel;
 
     public MainPanel() {
 

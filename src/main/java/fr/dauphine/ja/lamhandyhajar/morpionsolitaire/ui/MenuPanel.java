@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 public class MenuPanel extends JPanel {
 
-    public JButton button;
+	private static final long serialVersionUID = 1L;
+	
+	public JButton button;
     public ArrayList<JRadioButton> radioButtons;
 
     public MenuPanel() {
