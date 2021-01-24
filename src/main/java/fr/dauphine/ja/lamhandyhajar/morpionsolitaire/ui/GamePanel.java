@@ -16,6 +16,7 @@ import java.util.Map;
 public class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    private final boolean hint;
     private final JoinFive game;
     private final int pointSize = 8;
     private final int cellSize = 39;
@@ -25,8 +26,10 @@ public class GamePanel extends JPanel {
     private ArrayList<Line> possibleLines = null;
     private Point currentPoint = null;
 
-    public GamePanel(JoinFive.Rule rule) {
+    public GamePanel(JoinFive.Rule rule, boolean hint) {
         game = new JoinFive(rule);
+
+        this.hint = hint;
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -42,16 +45,19 @@ public class GamePanel extends JPanel {
                 currentPoint = point;
 
                 if (game.getPossibleLines(point).isEmpty()) {
-                    message = "Pas de possibilite";
+                    message = "No possibility";
                 } else {
 
-                    message = "Possibilites : ";
+                    message = "Possibilities : ";
 
                     possibleLines = new ArrayList<>();
 
+                    int i = 1;
+
                     for (Line l : game.getPossibleLines(point)) {
-                        message += l.toString();
+                        message += i + " - {" + l.toString() + "} ";
                         possibleLines.add(l);
+                        i++;
                     }
                 }
 
@@ -78,13 +84,13 @@ public class GamePanel extends JPanel {
 
                         game.play(move);
 
-                        message = "Ligne tracee : " + line.toString();
+                        message = "New line added : " + line.toString();
                     } catch (IllegalArgumentException exception) {
                         message = exception.getMessage();
                     }
 
                 } catch (IndexOutOfBoundsException exception) {
-                    message = "Pas de possibilite numero " + position;
+                    message = "No possibility for the number " + position;
                 }
 
                 possibleLines = null;
@@ -163,6 +169,9 @@ public class GamePanel extends JPanel {
             int yPoint = yOrigin + pair.getKey().getP2() * cellSize - (pointSize / 2);
 
             g.fillOval(xPoint, yPoint, pointSize, pointSize);
+
+            if (hint)
+                g.drawString("(" + pair.getKey().getP1() + "," + pair.getKey().getP2() + ")", xPoint + 10, yPoint + 20);
 
             Iterator<Map.Entry<Line, Integer>> linesIt = pair.getValue().getLines().entrySet().iterator();
 

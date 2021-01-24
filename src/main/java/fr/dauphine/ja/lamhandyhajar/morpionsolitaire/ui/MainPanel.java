@@ -18,7 +18,6 @@ public class MainPanel extends JPanel implements ActionListener {
 
         menuPanel = new MenuPanel();
         menuPanel.button.addActionListener(this);
-        menuPanel.radioButtons.get(0).setSelected(true);
 
         this.add(menuPanel);
     }
@@ -26,15 +25,12 @@ public class MainPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        JoinFive.Rule rule = null;
-
-        for (JRadioButton radioButton : menuPanel.radioButtons) {
-            if (radioButton.isSelected()) rule = JoinFive.Rule.valueOf(radioButton.getText());
-        }
+        JoinFive.Rule rule = (JoinFive.Rule) menuPanel.comboBox.getSelectedItem();
+        boolean hint = menuPanel.checkBox.isSelected();
 
         remove(menuPanel);
 
-        GamePanel gamePanel = new GamePanel(rule);
+        GamePanel gamePanel = new GamePanel(rule, hint);
 
         add(gamePanel);
 

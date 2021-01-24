@@ -3,29 +3,34 @@ package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.ui;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class MenuPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	
-	public JButton button;
-    public ArrayList<JRadioButton> radioButtons;
+    private static final long serialVersionUID = 1L;
+
+    public JButton button;
+    public JCheckBox checkBox;
+    public JComboBox comboBox;
 
     public MenuPanel() {
 
-        radioButtons = new ArrayList<>();
+        this.add(new JLabel("Welcome to the JoinFive game"));
 
-        for (JoinFive.Rule rule : JoinFive.Rule.values()) {
-            radioButtons.add(new JRadioButton(rule.name()));
-        }
+        comboBox = new JComboBox(JoinFive.Rule.values());
 
-        for (JRadioButton radioButton : radioButtons) {
-            this.add(radioButton);
-        }
+        comboBox.setBounds(50, 50, 90, 20);
+
+        this.add(comboBox);
+
+        checkBox = new JCheckBox("Show grid hints");
+
+        checkBox.setBounds(100, 100, 50, 50);
+
+        this.add(checkBox);
 
         button = new JButton();
-        button.setText("Nouvelle partie");
+
+        button.setText("Start new game");
 
         this.add(button);
     }
