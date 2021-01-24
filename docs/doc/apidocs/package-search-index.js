@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"fr.dauphine.ja.lamhandyhajar.morpionsolitaire.application"},{"l":"fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core"},{"l":"fr.dauphine.ja.lamhandyhajar.morpionsolitaire.solvers"},{"l":"fr.dauphine.ja.lamhandyhajar.morpionsolitaire.ui"}]
