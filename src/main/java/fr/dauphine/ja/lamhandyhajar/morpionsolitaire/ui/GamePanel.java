@@ -37,10 +37,8 @@ public class GamePanel extends JPanel {
                 if (game.getPossibleLines(point).isEmpty()) {
                     message = "Pas de possibilite";
                 } else {
-                    message = "";
 
                     for (Line l : game.getPossibleLines(point)) {
-                        message += l.toString();
 
                         Iterator<PointCoordinates> it = l.iterator();
 
@@ -48,6 +46,8 @@ public class GamePanel extends JPanel {
                             PointCoordinates pc = it.next();
 
                             if (pc.getP1() == coordinates.getP1() && pc.getP2() == coordinates.getP2()) {
+                                message = "Succes";
+
                                 Move move = new Move(l, point);
 
                                 game.play(move);
