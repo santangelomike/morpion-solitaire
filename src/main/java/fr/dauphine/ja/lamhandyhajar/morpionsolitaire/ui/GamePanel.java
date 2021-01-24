@@ -1,9 +1,7 @@
 package fr.dauphine.ja.lamhandyhajar.morpionsolitaire.ui;
 
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.JoinFive;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Line;
 import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.Point;
-import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.PointCoordinates;
+import fr.dauphine.ja.lamhandyhajar.morpionsolitaire.core.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +12,8 @@ import java.util.Map;
 
 public class GamePanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	private final JoinFive game;
+    private static final long serialVersionUID = 1L;
+    private final JoinFive game;
     private final int pointSize = 8;
     private final int cellSize = 39;
     private final int halfCellSize = cellSize / 2;
@@ -37,20 +35,26 @@ public class GamePanel extends JPanel {
                 Point point = new Point(coordinates);
 
                 if (game.getPossibleLines(point).isEmpty()) {
-                    message = "No possibilities";
+                    message = "Pas de possibilite";
                 } else {
                     message = "";
-                    for (Line line : game.getPossibleLines(point)) {
-                        message += line.toString();
+
+                    for (Line l : game.getPossibleLines(point)) {
+                        message += l.toString();
+
+                        Iterator<PointCoordinates> it = l.iterator();
+
+                        while (it.hasNext()) {
+                            PointCoordinates pc = it.next();
+
+                            if (pc.getP1() == coordinates.getP1() && pc.getP2() == coordinates.getP2()) {
+                                Move move = new Move(l, point);
+
+                                game.play(move);
+                            }
+                        }
                     }
                 }
-//                for (Line line : game.getPossibleLines(point)) {
-//                    System.out.println("test"); // TODO
-//                }
-//
-//                Move move = new Move(line, point);
-//
-//                game.play(move);
 
                 repaint();
             }
@@ -63,7 +67,7 @@ public class GamePanel extends JPanel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO main while loop
+                repaint();
             }
         }).start();
     }

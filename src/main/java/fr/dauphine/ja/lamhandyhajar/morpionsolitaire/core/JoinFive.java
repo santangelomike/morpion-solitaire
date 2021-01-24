@@ -25,7 +25,6 @@ public class JoinFive {
         grid = new HashMap<>();
         linesOnGrid = new ArrayList<Line>();
         initGrid();
-        setPoint(new Point(new PointCoordinates(11, 11)));
     }
 
     /**
